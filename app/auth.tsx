@@ -4,9 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { authService } from '../services/stackAuth';
 
-// Get screen dimensions for responsive design
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-
 export default function AuthScreen() {
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;

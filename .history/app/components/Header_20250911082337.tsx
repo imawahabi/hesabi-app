@@ -3,14 +3,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import NotificationsModal from './NotificationsModal';
+import SidebarMenu from './SidebarMenu';
 
-interface HeaderProps {
-  userName: string;
-  onMenuPress?: () => void;
-}
-
-const Header = ({ userName, onMenuPress }: HeaderProps) => {
+const Header = ({ userName }: { userName: string }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   
   const floatAnim1 = useRef(new Animated.Value(0)).current;
   const floatAnim2 = useRef(new Animated.Value(0)).current;
@@ -157,38 +154,23 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
         ]}
       />
       <View style={styles.navBar}>
-        <TouchableOpacity 
-          style={styles.navButton} 
-          onPress={onMenuPress}
-          activeOpacity={0.7}
-        >
-          <Animated.View style={{ transform: [{ scale: scaleAnim1 }] }}>
-            <Ionicons name="menu" size={28} color="white" />
-          </Animated.View>
+        <TouchableOpacity style={styles.navButton} onPress={() => setShowSidebar(true)}>
+          <Ionicons name="menu" size={28} color="white" />
         </TouchableOpacity>
         <View style={styles.appNameContainer}>
           <Ionicons name="wallet" size={24} color="white" style={styles.appLogo} />
           <Text style={styles.appName}>حسابي</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.navButton} 
-          onPress={() => setShowNotifications(true)}
-          activeOpacity={0.7}
-        >
-          <Animated.View style={{ transform: [{ scale: scaleAnim2 }] }}>
-            <Ionicons name="notifications-outline" size={24} color="white" />
-            <Animated.View style={[
-              styles.notificationBadge,
-              { transform: [{ scale: scaleAnim1 }] }
-            ]}>
-              <Text style={styles.notificationText}>3</Text>
-            </Animated.View>
-          </Animated.View>
+        <TouchableOpacity style={styles.navButton} onPress={() => setShowNotifications(true)}>
+          <Ionicons name="notifications-outline" size={24} color="white" />
+          <View style={styles.notificationBadge}>
+            <Text style={styles.notificationText}>3</Text>
+          </View>
         </TouchableOpacity>
       </View>
       <View style={styles.welcomeContainer}>
         <View style={styles.welcomeTextContainer}>
-        <Text style={styles.welcomeMessage}>مرحباً ،</Text>
+        <Text className="text-5xl">مرحباً ،</Text>
         <Text style={styles.userName}>{userName}</Text>
         </View>
         <View style={styles.salaryCountdownContainer}>
@@ -209,12 +191,16 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
           // Handle mark as read logic
         }}
         onMarkAllAsRead={() => {
-          notifications.forEach(notification => {
-            notification.read = true;
-          });
+          // Handle mark all as read logic
         }}
       />
       
+      <SidebarMenu
+        visible={showSidebar}
+        onClose={() => setShowSidebar(false)}
+        userName={userName}
+        userEmail="mohammed@example.com"
+      />
     </View>
   );
 };

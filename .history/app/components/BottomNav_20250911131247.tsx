@@ -5,10 +5,12 @@ import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 
 interface BottomNavProps {
   onAddCommitment?: () => void;
+  onNavigate?: (screen: string) => void;
+  activeScreen?: string;
 }
 
-const BottomNav = ({ onAddCommitment }: BottomNavProps) => {
-  const [active, setActive] = React.useState('الرئيسية');
+const BottomNav = ({ onAddCommitment, onNavigate, activeScreen = 'الرئيسية' }: BottomNavProps) => {
+  const [active, setActive] = React.useState(activeScreen);
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
   const navItems = [
@@ -73,13 +75,16 @@ const BottomNav = ({ onAddCommitment }: BottomNavProps) => {
               <TouchableOpacity
                 key={item.name}
                 style={styles.navItem}
-                onPress={() => setActive(item.name)}
+                onPress={() => {
+                  setActive(item.name);
+                  onNavigate?.(item.name);
+                }}
                 activeOpacity={0.6}
               >
                 <Ionicons
-                  name={active === item.name ? item.activeIcon : item.inactiveIcon}
+                  name={(activeScreen === item.name || active === item.name) ? item.activeIcon : item.inactiveIcon}
                   size={24}
-                  color={active === item.name ? '#3B82F6' : '#9CA3AF'}
+                  color={(activeScreen === item.name || active === item.name) ? '#3B82F6' : '#9CA3AF'}
                 />
                 <Text style={[
                   styles.navText,

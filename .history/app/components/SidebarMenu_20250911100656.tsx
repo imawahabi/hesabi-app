@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View, Easing } from 'react-native';
 
 interface MenuItem {
   id: string;
@@ -26,7 +26,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
   userEmail,
   onAddCommitment,
 }) => {
-  const slideAnim = useRef(new Animated.Value(-320)).current;
+  const slideAnim = useRef(new Animated.Value(320)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
   const headerAnim = useRef(new Animated.Value(0)).current;
   const menuItemAnims = useRef(Array.from({ length: 12 }, () => new Animated.Value(0))).current;
@@ -53,7 +53,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
   useEffect(() => {
     if (visible) {
       // Reset animations
-      slideAnim.setValue(-320);
+      slideAnim.setValue(320);
       overlayOpacity.setValue(0);
       headerAnim.setValue(0);
       menuItemAnims.forEach(anim => anim.setValue(0));
@@ -125,7 +125,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
       // Exit animations
       Animated.parallel([
         Animated.timing(slideAnim, {
-          toValue: -320,
+          toValue: 320,
           duration: 300,
           easing: Easing.in(Easing.cubic),
           useNativeDriver: true,
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
   },
   overlayTouchable: {
     flex: 1,

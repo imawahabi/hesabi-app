@@ -1,14 +1,9 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-interface FinancialSummaryCardProps {
-  data: any;
-  scrollY?: Animated.Value;
-}
-
-const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
+const FinancialSummaryCard = ({ data }: { data: any }) => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
@@ -64,36 +59,8 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
 
   const tabContent = getTabContent();
 
-  // Create scroll-based animations
-  const cardTranslateY = scrollY ? scrollY.interpolate({
-    inputRange: [0, 100, 200],
-    outputRange: [0, -10, -20],
-    extrapolate: 'clamp',
-  }) : 0;
-
-  const cardScale = scrollY ? scrollY.interpolate({
-    inputRange: [0, 150, 300],
-    outputRange: [1, 0.98, 0.95],
-    extrapolate: 'clamp',
-  }) : 1;
-
-  const cardOpacity = scrollY ? scrollY.interpolate({
-    inputRange: [0, 200, 400],
-    outputRange: [1, 0.9, 0.8],
-    extrapolate: 'clamp',
-  }) : 1;
-
   return (
-    <Animated.View style={[
-      styles.cardContainer,
-      {
-        transform: [
-          { translateY: cardTranslateY },
-          { scale: cardScale }
-        ],
-        opacity: cardOpacity,
-      }
-    ]}>
+    <View style={styles.cardContainer}>
       {/* Centered Title */}
       {/* Enhanced Tabs */}
       <View style={styles.tabsContainer}>
@@ -119,7 +86,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
         <View style={styles.amountSection}>
           <Text style={styles.mainAmount}>
             {tabContent.amount?.toLocaleString()}
-            <Text style={styles.unitText}>
+            <Text style={styles.unitText} className="text-2xl">
               {(tabContent as any).isPercentage ? '%' : (tabContent as any).isMonths ? ' شهر' : (tabContent as any).isCount ? ' نوع' : ' د.ك'}
             </Text>
           </Text>
@@ -142,7 +109,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
           ))}
         </View>
       </View>
-    </Animated.View>
+    </View>
   );
 };
 
