@@ -3,14 +3,14 @@ import * as WebBrowser from 'expo-web-browser';
 
 // Stack Auth Configuration
 const STACK_AUTH_CONFIG = {
-  projectId: "134b9c44-52d4-4719-9f60-b8f494ebe994",
-  publishableKey: "YOUR_PUBLISHABLE_KEY_HERE",
-  secretKey: "YOUR_SECRET_KEY_HERE",
+  projectId: process.env.EXPO_PUBLIC_STACK_AUTH_PROJECT_ID,
+  publishableKey: process.env.EXPO_PUBLIC_STACK_AUTH_PUBLISHABLE_KEY,
+  secretKey: process.env.EXPO_PUBLIC_STACK_AUTH_SECRET_KEY,
   baseUrl: "https://api.stack-auth.com/api/v1",
   googleOAuth: {
-    clientId: "YOUR_GOOGLE_CLIENT_ID_HERE",
-    clientSecret: "YOUR_GOOGLE_CLIENT_SECRET_HERE",
-    redirectUrl: "https://api.stack-auth.com/api/v1/auth/oauth/callback/google"
+    clientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID,
+    clientSecret: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET,
+    redirectUrl: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_REDIRECT_URL
   }
 };
 
@@ -25,6 +25,13 @@ const GOOGLE_OAUTH_CONFIG = {
 class StackAuthClient {
   async signInWithOAuth(provider: string): Promise<any> {
     try {
+      if (
+        !STACK_AUTH_CONFIG.googleOAuth.clientId ||
+        !STACK_AUTH_CONFIG.googleOAuth.redirectUrl
+      ) {
+        throw new Error("Google OAuth configuration is missing. Please check your .env file.");
+      }
+
       console.log(`[Auth] Attempting to sign in with ${provider}`);
 
       if (provider !== 'google') {
