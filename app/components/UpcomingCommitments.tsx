@@ -14,26 +14,55 @@ const UpcomingCommitments = ({ commitments }) => {
       </View>
       <View style={styles.listContainer}>
         {commitments.map((commitment) => (
-          <View key={commitment.id} style={[styles.card, commitment.overdue && styles.overdueCard]}>
-            <View style={styles.amountContainer}>
-              <Text style={styles.commitmentAmount}>{commitment.amount.toLocaleString()} د.ك</Text>
-              <View style={styles.actionsContainer}>
-                <TouchableOpacity style={styles.actionButton}>
-                  <Text style={styles.actionText}>دفع</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, styles.secondaryActionButton]}>
-                  <Text style={[styles.actionText, styles.secondaryActionText]}>تأجيل</Text>
-                </TouchableOpacity>
+          <TouchableOpacity
+            key={commitment.id}
+            style={[styles.card, commitment.overdue && styles.overdueCard]}
+            activeOpacity={0.8}
+          >
+            {/* Priority Indicator */}
+            <View style={[
+              styles.priorityIndicator,
+              { backgroundColor: commitment.priority === 'urgent' ? '#EF4444' :
+                                 commitment.priority === 'high' ? '#F59E0B' : '#10B981' }
+            ]} />
+
+            {/* Card Content */}
+            <View style={styles.cardContent}>
+              <View style={styles.amountContainer}>
+                <Text style={styles.commitmentAmount}>{commitment.amount.toLocaleString()} د.ك</Text>
+                <View style={styles.actionsContainer}>
+                  <TouchableOpacity style={[styles.actionButton, { backgroundColor: commitment.color }]}>
+                    <Text style={styles.actionText}>دفع</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.actionButton, styles.secondaryActionButton]}>
+                    <Text style={[styles.actionText, styles.secondaryActionText]}>تأجيل</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.commitmentDetails}>
+                <Text style={styles.commitmentName}>{commitment.name}</Text>
+                <View style={styles.dueDateContainer}>
+                  <Text style={[styles.commitmentDueDate, commitment.overdue && styles.overdueDateText]}>
+                    {commitment.dueDate}
+                  </Text>
+                  {commitment.daysLeft !== undefined && (
+                    <Text style={[styles.daysLeftText,
+                      { color: commitment.daysLeft < 0 ? '#EF4444' :
+                               commitment.daysLeft <= 3 ? '#F59E0B' : '#10B981' }
+                    ]}>
+                      {commitment.daysLeft < 0 ? `متأخر ${Math.abs(commitment.daysLeft)} يوم` :
+                       commitment.daysLeft === 0 ? 'اليوم' : `${commitment.daysLeft} يوم`}
+                    </Text>
+                  )}
+                </View>
+              </View>
+
+              <View style={[styles.iconContainer, { backgroundColor: `${commitment.color}15` }]}>
+                <Ionicons name={commitment.type === 'قرض بنكي' ? 'card' : commitment.type === 'إيجار' ? 'home' : commitment.type === 'أقساط' ? 'car' : 'receipt'} size={24} color={commitment.color} />
               </View>
             </View>
-            <View style={styles.commitmentDetails}>
-              <Text style={styles.commitmentName}>{commitment.name}</Text>
-              <Text style={styles.commitmentDueDate}>{commitment.dueDate}</Text>
-            </View>
-            <View style={[styles.iconContainer, { backgroundColor: `${commitment.color}20` }]}>
-              <Ionicons name={commitment.type === 'قرض بنكي' ? 'card' : commitment.type === 'إيجار' ? 'home' : commitment.type === 'أقساط' ? 'car' : 'receipt'} size={24} color={commitment.color} />
-            </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
@@ -68,20 +97,35 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 5,
+    borderRadius: 20,
+    marginBottom: 16,
+    shadowColor: '#1E40AF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 8,
+    overflow: 'hidden',
+    position: 'relative',
   },
   overdueCard: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#EF4444',
+    shadowColor: '#EF4444',
+    shadowOpacity: 0.15,
+  },
+  priorityIndicator: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 4,
+    height: '100%',
+    zIndex: 1,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingRight: 20, // Extra padding for priority indicator
   },
   iconContainer: {
     width: 50,
@@ -138,6 +182,20 @@ const styles = StyleSheet.create({
   },
   secondaryActionText: {
     color: '#1F2937',
+  },
+  dueDateContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  overdueDateText: {
+    color: '#EF4444',
+    fontWeight: 'bold',
+  },
+  daysLeftText: {
+    fontSize: 11,
+    fontFamily: 'Cairo-Regular',
+    marginTop: 2,
+    textAlign: 'right',
   },
 });
 

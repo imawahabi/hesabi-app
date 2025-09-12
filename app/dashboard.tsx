@@ -465,7 +465,10 @@ export default function Dashboard() {
           <RecentActivities activities={recentActivitiesData} />
         </Animated.View>
       </Animated.ScrollView>
-      <BottomNav onAddCommitment={() => setShowAddCommitmentModal(true)} />
+      <BottomNav
+        onAddCommitment={() => setShowAddCommitmentModal(true)}
+        currentRoute="الرئيسية"
+      />
       
       
       <AddCommitmentModal 

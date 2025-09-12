@@ -1,22 +1,24 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface BottomNavProps {
   onAddCommitment?: () => void;
+  currentRoute?: string;
 }
 
-const BottomNav = ({ onAddCommitment }: BottomNavProps) => {
-  const [active, setActive] = React.useState('الرئيسية');
+const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
+  const [active, setActive] = React.useState(currentRoute || 'الرئيسية');
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
   const navItems = [
-    { name: 'الرئيسية', activeIcon: 'home' as const, inactiveIcon: 'home' as const },
-    { name: 'الالتزامات', activeIcon: 'document-text' as const, inactiveIcon: 'document-text' as const },
-    { name: '+', activeIcon: 'add' as const, inactiveIcon: 'add' as const },
-    { name: 'التحليلات', activeIcon: 'bar-chart' as const, inactiveIcon: 'bar-chart' as const },
-    { name: 'الاعدادات', activeIcon: 'settings' as const, inactiveIcon: 'settings' as const },
+    { name: 'الرئيسية', activeIcon: 'home' as const, inactiveIcon: 'home-outline' as const, route: '/dashboard' as const },
+    { name: 'الالتزامات', activeIcon: 'list' as const, inactiveIcon: 'list-outline' as const, route: '/commitments' as const },
+    { name: '+', activeIcon: 'add' as const, inactiveIcon: 'add' as const, route: null },
+    { name: 'التحليلات', activeIcon: 'analytics' as const, inactiveIcon: 'analytics-outline' as const, route: '/analytics' as const },
+    { name: 'الاعدادات', activeIcon: 'settings' as const, inactiveIcon: 'settings-outline' as const, route: '/settings' as const },
   ];
 
   const handleFabPress = () => {
@@ -73,7 +75,16 @@ const BottomNav = ({ onAddCommitment }: BottomNavProps) => {
               <TouchableOpacity
                 key={item.name}
                 style={styles.navItem}
-                onPress={() => setActive(item.name)}
+                onPress={() => {
+                  setActive(item.name);
+                  if (item.route) {
+                    try {
+                      router.push(item.route);
+                    } catch (error) {
+                      console.log('Navigation error:', error);
+                    }
+                  }
+                }}
                 activeOpacity={0.6}
               >
                 <Ionicons

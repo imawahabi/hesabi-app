@@ -55,6 +55,8 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
   // Advanced animation refs
   const slideAnim = useRef(new Animated.Value(0)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
+  const stepProgressAnim = useRef(new Animated.Value(0)).current;
+  const cardScaleAnim = useRef(new Animated.Value(0.95)).current;
 
   const commitmentTypes: CommitmentType[] = [
     { id: 'personal_debt', name: 'ديون شخصية', description: 'ديون مستحقة لأشخاص', icon: 'people', color: '#EF4444' },
@@ -627,6 +629,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
               formErrors.name && styles.textInputError
             ]}
             placeholder="مثال: قسط السيارة"
+            placeholderTextColor="#6B7280"
             value={formData.name || ''}
             onChangeText={(value) => setFormData({...formData, name: value})}
             textAlign="right"
@@ -644,6 +647,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
               formErrors.amount && styles.textInputError
             ]}
             placeholder="0.000"
+            placeholderTextColor="#6B7280"
             value={formData.amount || ''}
             onChangeText={(value) => setFormData({...formData, amount: value})}
             keyboardType="decimal-pad"
@@ -710,6 +714,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
           <TextInput
             style={styles.textInput}
             placeholder="dd/mm/yyyy"
+            placeholderTextColor="#6B7280"
             value={formData.dueDate || ''}
             onChangeText={(value) => setFormData({...formData, dueDate: value})}
             textAlign="right"
@@ -724,6 +729,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
           <TextInput
             style={[styles.textInput, styles.textArea]}
             placeholder="معلومات إضافية..."
+            placeholderTextColor="#6B7280"
             value={formData.notes || ''}
             onChangeText={(value) => setFormData({...formData, notes: value})}
             multiline
