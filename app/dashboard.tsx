@@ -6,7 +6,10 @@ import BottomNav from './components/BottomNav';
 import CommitmentTypes from './components/CommitmentTypes';
 import FinancialSummaryCard from './components/FinancialSummaryCard';
 import Header from './components/Header';
+import PaymentRecordModal from './components/PaymentRecordModal';
+import PostponeModal from './components/PostponeModal';
 import RecentActivities from './components/RecentActivities';
+import NotificationsModal from './components/NotificationsModal';
 import SidebarMenu from './components/SidebarMenu';
 import UpcomingCommitments from './components/UpcomingCommitments';
 
@@ -125,25 +128,88 @@ const recentActivitiesData = [
     type: 'payment', 
     color: '#10B981', 
     time: 'منذ ساعتين',
-    progress: '+2.5%' // Progress toward debt freedom
+    progress: '+2.5%'
   },
   { 
     id: 2, 
     title: 'تذكير: فاتورة الكهرباء متأخرة', 
     amount: 45, 
-    type: 'overdue', 
+    type: 'reminder', 
     color: '#EF4444', 
     time: 'منذ يومين',
-    progress: '-0.5%' // Negative impact
+    progress: '-0.5%'
   },
   { 
     id: 3, 
     title: 'تحديث الراتب الشهري', 
     amount: 1200, 
-    type: 'income', 
+    type: 'update', 
     color: '#3B82F6', 
     time: 'أمس',
     progress: 'تحسن الوضع المالي'
+  },
+  { 
+    id: 4, 
+    title: 'إضافة التزام جديد: إيجار الشقة', 
+    amount: 300, 
+    type: 'new', 
+    color: '#3B82F6', 
+    time: 'منذ 3 أيام',
+    progress: 'تمت الإضافة'
+  },
+  { 
+    id: 5, 
+    title: 'تذكير: قسط بنك - بعد 5 أيام', 
+    amount: 180, 
+    type: 'reminder', 
+    color: '#F59E0B', 
+    time: 'منذ 4 أيام',
+    progress: 'موعد قريب'
+  },
+  { 
+    id: 6, 
+    title: 'تم سداد فاتورة الإنترنت', 
+    amount: 12, 
+    type: 'payment', 
+    color: '#10B981', 
+    time: 'منذ 5 أيام',
+    progress: '+0.3%'
+  },
+  { 
+    id: 7, 
+    title: 'تحديث: تعديل ميزانية الشهر', 
+    amount: 0, 
+    type: 'update', 
+    color: '#64748B', 
+    time: 'منذ 6 أيام',
+    progress: 'تم التعديل'
+  },
+  { 
+    id: 8, 
+    title: 'إضافة التزام جديد: جمعية', 
+    amount: 50, 
+    type: 'new', 
+    color: '#8B5CF6', 
+    time: 'منذ أسبوع',
+    progress: 'تمت الإضافة'
+  },
+  { 
+    id: 9, 
+    title: 'تذكير: قسط السيارة بعد 10 أيام', 
+    amount: 100, 
+    type: 'reminder', 
+    color: '#F59E0B', 
+    time: 'منذ 8 أيام',
+    progress: 'موعد قريب'
+  },
+  { 
+    id: 10, 
+    title: 'تم سداد دين شخصي', 
+    amount: 80, 
+    type: 'payment', 
+    color: '#10B981', 
+    time: 'منذ 9 أيام',
+    progress: '+1.0%'
   },
 ];
 
@@ -166,6 +232,10 @@ const financialSummaryData = {
 export default function Dashboard() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddCommitmentModal, setShowAddCommitmentModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showPostponeModal, setShowPostponeModal] = useState(false);
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+  const [selectedCommitment, setSelectedCommitment] = useState<any>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -240,7 +310,8 @@ export default function Dashboard() {
         useNativeDriver: true,
       })
     ]).start();
-    // Add your sidebar opening logic here
+    // Open sidebar menu
+    setShowSidebar(true);
   };
 
   const handleNotificationPress = () => {
@@ -257,7 +328,8 @@ export default function Dashboard() {
         useNativeDriver: true,
       })
     ]).start();
-    // Add your notification logic here
+    // Open notifications modal
+    setShowNotificationsModal(true);
   };
 
   const handleScroll = Animated.event(
@@ -310,51 +382,36 @@ export default function Dashboard() {
         <Animated.View style={[
           styles.stickyHeader,
           {
-            transform: [
-              {
-                translateY: stickyHeaderAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [-100, 0],
-                })
-              },
-              {
-                scale: stickyHeaderAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.95, 1],
-                })
-              }
-            ],
+            transform: [{
+              translateY: stickyHeaderAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-50, 0],
+              })
+            }],
             opacity: stickyHeaderAnim,
           }
         ]}>
-          <View style={styles.stickyNavBar}>
-            <Animated.View style={[styles.stickyNavButton, { transform: [{ scale: menuButtonScale }] }]}>
-              <TouchableOpacity onPress={handleMenuPress} style={styles.stickyButtonTouchable}>
-                <Ionicons name="menu" size={20} color="#3B82F6" />
-              </TouchableOpacity>
-            </Animated.View>
-            <Animated.View style={[
-              styles.stickyAppNameContainer,
-              {
-                transform: [{
-                  scale: stickyHeaderAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.8, 1],
-                  })
-                }]
-              }
-            ]}>
-              <Ionicons name="wallet" size={18} color="#3B82F6" />
-              <Text style={styles.stickyAppName}>حسابي</Text>
-            </Animated.View>
-            <Animated.View style={[styles.stickyNavButton, { transform: [{ scale: notificationButtonScale }] }]}>
-              <TouchableOpacity onPress={handleNotificationPress} style={styles.stickyButtonTouchable}>
-                <Ionicons name="notifications-outline" size={20} color="#3B82F6" />
-                <View style={styles.stickyNotificationBadge}>
-                  <Text style={styles.stickyNotificationText}>3</Text>
-                </View>
-              </TouchableOpacity>
-            </Animated.View>
+          <View style={styles.stickyContainer}>
+            <TouchableOpacity 
+              style={styles.stickyMenuButton}
+              onPress={handleMenuPress}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="menu" size={22} color="#1F2937" />
+            </TouchableOpacity>
+            
+            <View style={styles.stickyTitleContainer}>
+              <Text style={styles.stickyTitle}>حسابي</Text>
+            </View>
+            
+            <TouchableOpacity 
+              style={styles.stickyNotificationButton}
+              onPress={handleNotificationPress}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="notifications-outline" size={22} color="#1F2937" />
+              <View style={styles.notificationDot} />
+            </TouchableOpacity>
           </View>
         </Animated.View>
       )}
@@ -397,73 +454,80 @@ export default function Dashboard() {
           }}
         />
         
-        <Animated.View style={{
-          opacity: financialCardAnim,
-          transform: [{
-            translateY: financialCardAnim.interpolate({
+        {/* Content Sections with Simple Animations */}
+        <View style={styles.contentContainer}>
+          <Animated.View style={[styles.sectionContainer, {
+            opacity: financialCardAnim,
+            transform: [{ translateY: financialCardAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [50, 0],
-            })
-          }, {
-            scale: financialCardAnim.interpolate({
+              outputRange: [30, 0],
+            })}]
+          }]}>
+            <FinancialSummaryCard data={financialSummaryData} scrollY={scrollY} />
+          </Animated.View>
+          
+          <Animated.View style={[styles.sectionContainer, {
+            opacity: commitmentTypesAnim,
+            transform: [{ translateY: commitmentTypesAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [0.9, 1],
-            })
-          }]
-        }}>
-          <FinancialSummaryCard data={financialSummaryData} scrollY={scrollY} />
-        </Animated.View>
-        
-        <Animated.View style={{
-          opacity: commitmentTypesAnim,
-          transform: [{
-            translateY: commitmentTypesAnim.interpolate({
+              outputRange: [30, 0],
+            })}]
+          }]}>
+            <CommitmentTypes 
+              types={commitmentTypesData} 
+              onAddCommitment={() => setShowAddCommitmentModal(true)}
+            />
+          </Animated.View>
+          
+          <Animated.View style={[styles.sectionContainer, {
+            opacity: upcomingCommitmentsAnim,
+            transform: [{ translateY: upcomingCommitmentsAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [50, 0],
-            })
-          }, {
-            scale: commitmentTypesAnim.interpolate({
+              outputRange: [30, 0],
+            })}]
+          }]}>
+            <UpcomingCommitments 
+              commitments={upcomingCommitmentsData} 
+              onPayCommitment={(commitment) => {
+                setSelectedCommitment({
+                  name: commitment.name,
+                  institution: commitment.type,
+                  amount: commitment.amount.toString(),
+                  remainingAmount: (commitment.amount * 10).toString(),
+                  remainingInstallments: 12,
+                  icon: commitment.type === 'قرض بنكي' ? 'card' : 
+                        commitment.type === 'إيجار' ? 'home' :
+                        commitment.type === 'قسط' ? 'time' : 'flash',
+                  color: commitment.color
+                });
+                setShowPaymentModal(true);
+              }}
+              onPostponeCommitment={(commitment) => {
+                setSelectedCommitment({
+                  name: commitment.name,
+                  institution: commitment.type,
+                  amount: commitment.amount.toString(),
+                  dueDate: commitment.dueDate,
+                  icon: commitment.type === 'قرض بنكي' ? 'card' : 
+                        commitment.type === 'إيجار' ? 'home' :
+                        commitment.type === 'قسط' ? 'time' : 'flash',
+                  color: commitment.color
+                });
+                setShowPostponeModal(true);
+              }}
+            />
+          </Animated.View>
+          
+          <Animated.View style={[styles.sectionContainer, {
+            opacity: recentActivitiesAnim,
+            transform: [{ translateY: recentActivitiesAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [0.9, 1],
-            })
-          }]
-        }}>
-          <CommitmentTypes types={commitmentTypesData} />
-        </Animated.View>
-        
-        <Animated.View style={{
-          opacity: upcomingCommitmentsAnim,
-          transform: [{
-            translateY: upcomingCommitmentsAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [50, 0],
-            })
-          }, {
-            scale: upcomingCommitmentsAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.9, 1],
-            })
-          }]
-        }}>
-          <UpcomingCommitments commitments={upcomingCommitmentsData} />
-        </Animated.View>
-        
-        <Animated.View style={{
-          opacity: recentActivitiesAnim,
-          transform: [{
-            translateY: recentActivitiesAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [50, 0],
-            })
-          }, {
-            scale: recentActivitiesAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.9, 1],
-            })
-          }]
-        }}>
-          <RecentActivities activities={recentActivitiesData} />
-        </Animated.View>
+              outputRange: [30, 0],
+            })}]
+          }]}>
+            <RecentActivities activities={recentActivitiesData} />
+          </Animated.View>
+        </View>
       </Animated.ScrollView>
       <BottomNav
         onAddCommitment={() => setShowAddCommitmentModal(true)}
@@ -480,6 +544,51 @@ export default function Dashboard() {
           // TODO: Add commitment to state/database
         }}
       />
+      
+      <PaymentRecordModal
+        visible={showPaymentModal}
+        onClose={() => {
+          setShowPaymentModal(false);
+          setSelectedCommitment(null);
+        }}
+        onSubmit={(paymentData) => {
+          console.log('Payment recorded:', paymentData, 'for commitment:', selectedCommitment);
+          // TODO: Process payment and update commitment status
+          alert('تم تسجيل الدفعة بنجاح!');
+        }}
+        commitmentData={selectedCommitment}
+      />
+      
+      <PostponeModal
+        visible={showPostponeModal}
+        onClose={() => {
+          setShowPostponeModal(false);
+          setSelectedCommitment(null);
+        }}
+        onSubmit={(postponeData) => {
+          console.log('Commitment postponed:', postponeData, 'for commitment:', selectedCommitment);
+          // TODO: Update commitment due date
+          alert('تم تأجيل الالتزام بنجاح!');
+        }}
+        commitmentData={selectedCommitment}
+      />
+      
+      <NotificationsModal
+        visible={showNotificationsModal}
+        onClose={() => setShowNotificationsModal(false)}
+        notifications={[
+          { id: 1, title: 'دفعة مسجلة', message: 'تم تسجيل دفعة قسط السيارة', time: 'قبل ساعة', type: 'payment', read: false, amount: 100 },
+          { id: 2, title: 'تذكير استحقاق', message: 'فاتورة الكهرباء مستحقة خلال 3 أيام', time: 'اليوم', type: 'reminder', read: false },
+          { id: 3, title: 'إنجاز', message: 'أكملت 30% من خطة السداد', time: 'أمس', type: 'achievement', read: true },
+        ]}
+        onMarkAsRead={(id) => {
+          // TODO: integrate with store later
+        }}
+        onMarkAllAsRead={() => {
+          // TODO: integrate with store later
+        }}
+      />
+
     </View>
   );
 }
@@ -492,139 +601,76 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 100, // To make space for the bottom nav
   },
+  // Simplified Sticky Header
   stickyHeader: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingTop: 50,
-    paddingBottom: 15,
-    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    paddingTop: 45,
+    paddingBottom: 12,
     zIndex: 1000,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(59, 130, 246, 0.1)',
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
+    borderBottomColor: '#F1F5F9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  stickyNavBar: {
+  stickyContainer: {
     flexDirection: 'row-reverse',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingHorizontal: 20,
   },
-  stickyNavButton: {
+  stickyMenuButton: {
+    width: 40,
+    height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-    overflow: 'hidden',
-  },
-  stickyButtonTouchable: {
-    padding: 8,
-  },
-  stickyAppNameContainer: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-  },
-  stickyAppName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#3B82F6',
-    fontFamily: 'Cairo-Bold',
-    marginRight: 6,
-  },
-  stickyNotificationBadge: {
-    position: 'absolute',
-    right: -2,
-    top: -2,
-    backgroundColor: '#EF4444',
-    borderRadius: 8,
-    width: 16,
-    height: 16,
+    backgroundColor: '#F8FAFC',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
-  stickyNotificationText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: 'bold',
+  stickyTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
-  healthOverviewContainer: {
-    backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginTop: 20,
-    borderRadius: 15,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  sectionTitle: {
+  stickyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1F2937',
     fontFamily: 'Cairo-Bold',
-    textAlign: 'right',
-    marginBottom: 15,
   },
-  healthMetricsRow: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  healthMetric: {
+  stickyNotificationButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
-    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    position: 'relative',
   },
-  healthMetricValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontFamily: 'Cairo-Bold',
-    marginBottom: 5,
-  },
-  healthMetricLabel: {
-    fontSize: 12,
-    color: '#6B7280',
-    fontFamily: 'Cairo-Regular',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  healthIndicator: {
+  notificationDot: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
     width: 8,
     height: 8,
     borderRadius: 4,
+    backgroundColor: '#EF4444',
   },
-  progressContainer: {
-    marginTop: 10,
+  
+  // Content Layout
+  contentContainer: {
+    flex: 1,
   },
-  progressLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    fontFamily: 'Cairo-Bold',
-    textAlign: 'right',
-    marginBottom: 10,
-  },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#10B981',
-    borderRadius: 4,
-  },
-  progressText: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'right',
-    fontFamily: 'Cairo-Regular',
+  sectionContainer: {
+    marginBottom: 16,
   },
 });

@@ -79,7 +79,7 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
                   setActive(item.name);
                   if (item.route) {
                     try {
-                      router.push(item.route);
+                      router.replace(item.route as any);
                     } catch (error) {
                       console.log('Navigation error:', error);
                     }
@@ -94,7 +94,7 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
                 />
                 <Text style={[
                   styles.navText,
-                  active === item.name && styles.activeNavText
+                  active === item.name && styles.activeNavText,
                 ]}>
                   {item.name}
                 </Text>

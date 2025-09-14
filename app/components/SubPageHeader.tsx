@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import {
@@ -21,6 +21,7 @@ interface SubPageHeaderProps {
     onPress: () => void;
   };
   scrollY?: Animated.Value;
+  entrance?: boolean; // enable/disable entrance animation on mount
 }
 
 const SubPageHeader: React.FC<SubPageHeaderProps> = ({
@@ -29,51 +30,51 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
   showBackButton = true,
   rightAction,
   scrollY,
+  entrance = true,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(-50)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const slideAnim = useRef(new Animated.Value(-30)).current;
   const headerOpacity = useRef(new Animated.Value(1)).current;
-  const headerHeight = useRef(new Animated.Value(1)).current;
+  const blurIntensity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Entrance animation
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 600,
-        easing: Easing.out(Easing.back(1.1)),
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 600,
-        easing: Easing.out(Easing.back(1.1)),
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // Entrance animation (can be disabled)
+    if (entrance) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // jump to final state immediately
+      fadeAnim.setValue(1);
+      slideAnim.setValue(0);
+    }
 
-    // Scroll-based animations
+    // Scroll-based animations with blur effect
     if (scrollY) {
-      const headerOpacityListener = scrollY.addListener(({ value }) => {
-        const opacity = Math.max(0.7, 1 - value / 100);
+      const headerListener = scrollY.addListener(({ value }) => {
+        const opacity = Math.max(0.95, 1 - value / 150);
         headerOpacity.setValue(opacity);
         
-        const height = Math.max(0.8, 1 - value / 200);
-        headerHeight.setValue(height);
+        const blur = Math.min(20, value / 5);
+        blurIntensity.setValue(blur);
       });
 
       return () => {
-        scrollY.removeListener(headerOpacityListener);
+        scrollY.removeListener(headerListener);
       };
     }
-  }, [scrollY]);
+  }, [scrollY, entrance, fadeAnim, slideAnim, headerOpacity, blurIntensity]);
 
   const handleBackPress = () => {
     if (router.canGoBack()) {
@@ -89,40 +90,35 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
         styles.container,
         {
           opacity: headerOpacity,
-          transform: [{ scale: headerHeight }],
         }
       ]}
     >
-      <LinearGradient
-        colors={['#1E40AF', '#3B82F6', '#60A5FA']}
-        style={styles.gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
+      <BlurView intensity={20} style={styles.blurContainer}>
+        <View style={styles.backgroundOverlay} />
         <SafeAreaView>
           <Animated.View
             style={[
               styles.content,
               {
                 opacity: fadeAnim,
-                transform: [
-                  { translateY: slideAnim },
-                  { scale: scaleAnim }
-                ],
+                transform: [{ translateY: slideAnim }],
               }
             ]}
           >
             <View style={styles.topRow}>
-              {showBackButton && (
+              {showBackButton ? (
                 <TouchableOpacity
                   style={styles.backButton}
                   onPress={handleBackPress}
-                  activeOpacity={0.7}
+                  activeOpacity={0.6}
                 >
-                  <View style={styles.backButtonContainer}>
-                    <Ionicons name="chevron-forward" size={24} color="white" />
+                  <View style={styles.iconContainer}>
+                    <Ionicons name="chevron-forward" size={20} color="#1F2937" />
                   </View>
                 </TouchableOpacity>
+              ) : (
+                // spacer to keep title centered when no back button
+                <View style={styles.rightAction} />
               )}
 
               <View style={styles.titleContainer}>
@@ -136,10 +132,10 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
                 <TouchableOpacity
                   style={styles.rightAction}
                   onPress={rightAction.onPress}
-                  activeOpacity={0.7}
+                  activeOpacity={0.6}
                 >
-                  <View style={styles.rightActionContainer}>
-                    <Ionicons name={rightAction.icon as any} size={24} color="white" />
+                  <View style={styles.iconContainer}>
+                    <Ionicons name={rightAction.icon as any} size={20} color="#1F2937" />
                   </View>
                 </TouchableOpacity>
               ) : (
@@ -148,7 +144,7 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
             </View>
           </Animated.View>
         </SafeAreaView>
-      </LinearGradient>
+      </BlurView>
     </Animated.View>
   );
 };
@@ -159,15 +155,13 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1000,
     elevation: 10,
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
   },
-  gradient: {
+  blurContainer: {
     paddingBottom: 20,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
+  },
+  backgroundOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
   },
   content: {
     paddingHorizontal: 20,
@@ -182,15 +176,15 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 8,
   },
-  backButtonContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(31, 41, 55, 0.08)',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(31, 41, 55, 0.12)',
   },
   titleContainer: {
     flex: 1,
@@ -198,38 +192,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
     textAlign: 'center',
     fontFamily: 'Cairo-Bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 13,
+    color: '#6B7280',
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: 2,
     fontFamily: 'Cairo-Regular',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    fontWeight: '500',
   },
   rightAction: {
     padding: 8,
-    width: 56, // Same width as back button for balance
-  },
-  rightActionContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    width: 52,
   },
 });
 
