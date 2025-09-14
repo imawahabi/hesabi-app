@@ -119,11 +119,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
               </View>
               <View style={styles.userDetails}>
                 <Text style={styles.userName}>{userName}</Text>
-                <Text style={styles.userEmail}>{userEmail}</Text>
-                <View style={styles.statusContainer}>
-                  <View style={styles.statusDot} />
-                  <Text style={styles.statusText}>متصل</Text>
-                </View>
               </View>
             </View>
             
@@ -217,7 +212,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
             </TouchableOpacity>
             
             <View style={styles.appInfo}>
-              <Text style={styles.appVersion}>حسابي v1.0.0</Text>
+              <Text style={styles.appVersion}>تطبيق حسابي v1.0.0</Text>
             </View>
           </View>
         </Animated.View>
@@ -259,8 +254,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   avatarContainer: {
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     borderRadius: 30,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
@@ -269,7 +264,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   avatarText: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
     fontFamily: 'Cairo-Bold',

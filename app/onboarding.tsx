@@ -87,23 +87,22 @@ const OnboardingStep: React.FC<OnboardingStepProps> = ({
       // المرحلة الأولى: زر واحد فقط (التالي)
       return (
         <View style={styles.singleButtonContainer}>
-          <TouchableOpacity style={styles.fullWidthButton} onPress={onNext}>
-            <Text style={styles.primaryButtonText}>التالي</Text>
-            <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-
           {/* Temp Button */}
           <TouchableOpacity
             style={styles.skipDevButton}
             onPress={() => router.push('/dashboard')}
             activeOpacity={0.7}
           >
-            <Ionicons name="rocket-outline" size={16} color="#3B82F6" />
-            <Text style={styles.skipDevText}>تخطي مؤقتاً إلى الداشبورد</Text>
+            <Text style={styles.skipDevText}>تخطي مؤقتاً </Text>
+            <Ionicons name="arrow-forward" size={22} color="#3B82F6" />
           </TouchableOpacity>
 
           {/* Temp Button */}
 
+          <TouchableOpacity style={styles.fullWidthButton} onPress={onNext}>
+            <Text style={styles.primaryButtonText}>التالي</Text>
+            <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
       );
     } else {
@@ -374,14 +373,16 @@ const styles = StyleSheet.create({
 
   // مؤقت: زر تخطي إلى الداشبورد أثناء التطوير
   skipDevButton: {
-    marginTop: 12,
+    marginBottom: 22,
     alignSelf: 'center',
     flexDirection: 'row',
+    justifyContent:'center',
     alignItems: 'center',
     gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
     borderRadius: 12,
+    width:"100%",
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
   skipDevText: {
     color: '#3B82F6',
     fontFamily: 'Cairo-Bold',
-    fontSize: 13,
+    fontSize: 18,
   },
   // مؤقت: زر تخطي إلى الداشبورد أثناء التطوير
 

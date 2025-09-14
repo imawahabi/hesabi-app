@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#08234d',
     fontFamily: 'Cairo-Bold',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     backgroundColor: '#F8FAFC',
-    borderRadius: 20,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },

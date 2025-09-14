@@ -52,7 +52,7 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
 
   const paymentMethods = [
     { id: 'cash', name: 'نقداً', icon: 'cash', color: '#10B981' },
-    { id: 'wamda_link', name: 'ومض / رابط', icon: 'phone-portrait', color: '#8B5CF6' },
+    { id: 'wamda_link', name: 'تحويل ومض / رابط', icon: 'phone-portrait', color: '#8B5CF6' },
     { id: 'bank_transfer', name: 'تحويل بنكي', icon: 'card', color: '#3B82F6' },
     { id: 'other', name: 'اخرى', icon: 'ellipsis-horizontal', color: '#6B7280' },
   ];

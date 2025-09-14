@@ -21,11 +21,11 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
   // Rotating financial tips
   const tips = useMemo(
     () => [
-      'نصيحة: خصّص 20% من دخلك للادخار الطارئ',
-      'نصيحة: سدّد الديون ذات الفائدة الأعلى أولاً',
-      'نصيحة: راقب مصاريفك الأسبوعية وحدّد سقفاً لكل فئة',
-      'نصيحة: ادّخر قبل أن تصرف (Pay Yourself First)',
-      'نصيحة: خطّط للالتزامات الموسمية مبكراً (مدارس/سفر)'
+      'خصّص 20% من دخلك للادخار الطارئ',
+      'سدّد الديون ذات الفائدة الأعلى أولاً',
+      'راقب مصاريفك الأسبوعية وحدّد سقفاً لكل فئة',
+      'ادّخر قبل أن تصرف (Pay Yourself First)',
+      'خطّط للالتزامات الموسمية مبكراً (مدارس/سفر)'
     ],
     []
   );
@@ -218,7 +218,7 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
           <Text style={styles.userName}>{userName}</Text>
         </View>
         <View style={styles.tipContainer}>
-          <Ionicons name="bulb" size={14} color="rgba(255, 255, 255, 0.95)" style={styles.tipIcon} />
+          <Ionicons name="bulb" size={14} color="yellow" style={styles.tipIcon} />
           <Animated.Text
             style={[
               styles.motivationText,
@@ -234,7 +234,7 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
             accessibilityRole="text"
             accessibilityLabel="نصيحة مالية"
           >
-            {tips[tipIndex]}
+            <Text style={{color:"yellow"}}>نصيحة : </Text>{tips[tipIndex]}
           </Animated.Text>
         </View>
       </View>
@@ -261,10 +261,10 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
 const styles = StyleSheet.create({
   headerContainer: {
     paddingTop: 50,
-    paddingBottom: 40,
+    paddingBottom: 35,
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
     overflow: 'hidden',
     position: 'relative',
   },
@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     fontFamily: 'Cairo-Bold',
+    marginLeft:10,
   },
   backgroundCircle: {
     position: 'absolute',
@@ -433,9 +434,8 @@ const styles = StyleSheet.create({
   },
   motivationText: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'Cairo-Regular',
-    fontStyle: 'italic',
   },
   salaryIconContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',

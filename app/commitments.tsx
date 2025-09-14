@@ -311,14 +311,16 @@ const CommitmentsScreen = () => {
       <View style={styles.statCard}>
         <Text style={styles.statValue}>
           {commitments.reduce((sum, c) => sum + c.remainingAmount, 0).toLocaleString()}
-        </Text>
-        <Text style={styles.statLabel}>إجمالي المتبقي (د.ك)</Text>
+          <Text style={styles.currencyid}>  د.ك</Text>
+          </Text>
+        <Text style={styles.statLabel}>إجمالي المتبقي</Text>
       </View>
       <View style={styles.statCard}>
         <Text style={styles.statValue}>
           {commitments.reduce((sum, c) => sum + c.monthlyPayment, 0).toLocaleString()}
+          <Text style={styles.currencyid}>  د.ك</Text>
         </Text>
-        <Text style={styles.statLabel}>الأقساط الشهرية (د.ك)</Text>
+        <Text style={styles.statLabel}>الأقساط الشهرية</Text>
       </View>
     </View>
   );
@@ -488,6 +490,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 12,
+    borderColor:'#ebebed',
+    borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
@@ -570,11 +574,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 3,
+    borderColor:'#ebebed',
+    borderWidth: 1,
   },
   statValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: '#008f26',
     fontFamily: 'Cairo-Bold',
   },
   statLabel: {
@@ -640,12 +646,12 @@ const styles = StyleSheet.create({
   },
   sectionBadge: {
     backgroundColor: '#3B82F6',
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 20,
   },
   sectionCount: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     color: 'white',
     fontFamily: 'Cairo-Bold',
@@ -675,7 +681,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: '#ebebed',
   },
   typeSummaryIconCircle: {
     width: 36,
@@ -775,7 +781,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 18,
+    borderRadius: 15,
     marginRight: 10,
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
@@ -819,7 +825,7 @@ const styles = StyleSheet.create({
   },
   // أنماط فلتر الحالات
   statusFiltersRow: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     marginBottom: 20,
@@ -828,17 +834,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     paddingHorizontal: 16,
     alignItems: 'center',
+    margin:'auto',
+    gap:10,
   },
   statusFilterChip: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 18,
+    borderRadius: 15,
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
-    marginLeft: 10,
     minHeight: 40,
   },
   statusFilterChipActive: {
@@ -853,7 +860,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'right',
     writingDirection: 'rtl',
-    marginRight: 8,
+    marginLeft: 8,
   },
   statusFilterTextActive: {
     color: 'white',
@@ -886,15 +893,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: '#ebebed',
   },
   cardContent: {
-    padding: 16,
+    padding: 18,
   },
   cardHeader: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
-    marginBottom: 16,
   },
   typeIcon: {
     width: 40,
@@ -958,7 +964,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: '#6B7280',
-    fontFamily: 'Cairo-Regular',
+    fontFamily: 'Cairo-Bold',
   },
   progressContainer: {
     flexDirection: 'row-reverse',
@@ -966,7 +972,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   progressText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#6B7280',
     fontFamily: 'Cairo-Bold',
@@ -974,15 +980,15 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     flex: 1,
-    height: 4,
+    height: 9,
     backgroundColor: '#F3F4F6',
-    borderRadius: 2,
+    borderRadius: 20,
     overflow: 'hidden',
     flexDirection: 'row-reverse',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 2,
+    borderRadius: 20,
   },
   cardFooter: {
     flexDirection: 'row-reverse',
@@ -1050,6 +1056,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  currencyid: {
+    fontSize: 14,
+    fontFamily: 'Cairo-Bold',
+    color: '#8c8c8c',
+  }
 });
 
 export default CommitmentsScreen;

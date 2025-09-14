@@ -48,7 +48,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
     // حساب الأيام المتبقية للراتب القادم
     const today = new Date();
     const currentDay = today.getDate();
-    const salaryDay = 1; // افتراض أن الراتب يأتي في أول الشهر
+    const salaryDay = 28; // افتراض أن الراتب يأتي في أول الشهر
     let daysToSalary;
     
     if (currentDay <= salaryDay) {
@@ -74,7 +74,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
       case 'repayment':
         return {
           amount: monthsToFreedom,
-          subtitle: monthsToFreedom <= 12 ? 'للتخلص من الديون' : 'شهر للتخلص من الدين',
+          subtitle: monthsToFreedom <= 12 ? 'للتخلص من الديون' : 'للتخلص من الالتزامات',
           isMonths: true,
           stats: [
             { icon: 'cash' as const, color: '#F59E0B', label: 'دفعة شهرية', value: monthlyPayment },
@@ -170,7 +170,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
               <Text style={styles.mainAmount}>
                 {tabContent.amount?.toLocaleString()}
                 <Text style={styles.unitText}>
-                  {(tabContent as any).isPercentage ? '%' : (tabContent as any).isMonths ? 'شهر' : (tabContent as any).isCount ? 'نوع' : 'د.ك'}
+                  {(tabContent as any).isPercentage ? '  %' : (tabContent as any).isMonths ? '  شهر' : (tabContent as any).isCount ? 'نوع' : '  د.ك'}
                 </Text>
               </Text>
               <Text style={styles.amountSubtitle} numberOfLines={2}>{tabContent.subtitle}</Text>

@@ -6,22 +6,22 @@ import BottomNav from './components/BottomNav';
 import CommitmentTypes from './components/CommitmentTypes';
 import FinancialSummaryCard from './components/FinancialSummaryCard';
 import Header from './components/Header';
+import NotificationsModal from './components/NotificationsModal';
 import PaymentRecordModal from './components/PaymentRecordModal';
 import PostponeModal from './components/PostponeModal';
 import RecentActivities from './components/RecentActivities';
-import NotificationsModal from './components/NotificationsModal';
 import SidebarMenu from './components/SidebarMenu';
 import UpcomingCommitments from './components/UpcomingCommitments';
 
 // Realistic financial data based on Kuwait market
 const mockUser = {
   name: 'محمد أحمد',
-  monthlyIncome: 1200, // KWD - Average Kuwait salary
-  totalCommitments: 8500, // Total outstanding debt
-  monthlyCommitments: 680, // Monthly payment obligations
-  paidThisMonth: 450, // Already paid this month
-  remainingThisMonth: 230, // Still due this month
-  availableIncome: 520, // Income after commitments (1200 - 680)
+  monthlyIncome: 520, // KWD - Average Kuwait salary
+  totalCommitments: 11250, // Total outstanding debt
+  monthlyCommitments: 312.25, // Monthly payment obligations
+  paidThisMonth: 120, // Already paid this month
+  remainingThisMonth: 155.25, // Still due this month
+  availableIncome: 188.75, // Income after commitments (1200 - 680)
   debtToIncomeRatio: 56.7, // (680/1200) * 100
   payoffProgress: 35, // Overall debt elimination progress
 };

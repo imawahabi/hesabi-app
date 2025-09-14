@@ -25,10 +25,10 @@ const CommitmentDetailsScreen = () => {
     id: id,
     name: 'قسط السيارة',
     type: 'installments',
-    amount: 250.000,
-    totalAmount: 15000.000,
-    paidAmount: 3750.000,
-    remainingAmount: 11250.000,
+    amount: 250,
+    totalAmount: 15000,
+    paidAmount: 3750.75,
+    remainingAmount: 11250.25,
     progress: 0.25,
     status: 'active',
     dueDate: '2024/01/15',
@@ -74,7 +74,7 @@ const CommitmentDetailsScreen = () => {
           </View>
 
           <View style={styles.headerAmountRow}>
-            <Text style={styles.headerAmountValue}>{commitment.amount.toFixed(3)}</Text>
+            <Text style={styles.headerAmountValue}>{commitment.amount}</Text>
             <Text style={styles.headerAmountCurrency}>د.ك</Text>
           </View>
           <Text style={styles.headerAmountLabel}>القسط الشهري</Text>
@@ -302,7 +302,6 @@ const styles = StyleSheet.create({
   headerAmountRow: {
     flexDirection: 'row-reverse',
     alignItems: 'flex-end',
-    marginTop: 14,
   },
   headerAmountValue: {
     fontSize: 34,
@@ -316,13 +315,13 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.95)',
     fontFamily: 'Cairo-Bold',
     marginRight: 6,
+    marginBottom:10,
   },
   headerAmountLabel: {
     fontSize: 12,
     color: 'rgba(255,255,255,0.9)',
     fontFamily: 'Cairo-Regular',
     textAlign: 'right',
-    marginTop: 2,
   },
   metaRow: {
     flexDirection: 'row-reverse',
@@ -372,9 +371,10 @@ const styles = StyleSheet.create({
   },
   progressBarWrapper: {
     position: 'relative',
-    height: 10,
-    borderRadius: 5,
+    height: 15,
+    borderRadius: 20,
     overflow: 'hidden',
+    flexDirection: 'row-reverse',
   },
   progressBarTrack: {
     ...StyleSheet.absoluteFillObject,
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: 5,
+    borderRadius: 20,
   },
   progressDetailText: {
     fontSize: 12,
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   viewAllText: {
     fontSize: 14,
     color: '#3B82F6',
-    fontFamily: 'Cairo-Regular',
+    fontFamily: 'Cairo-Bold',
     marginLeft: 4,
   },
   paymentItem: {
@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     fontFamily: 'Cairo-Bold',
-    marginLeft: 8,
+    marginRight: 8,
   },
   bottomSpacing: {
     height: 100,

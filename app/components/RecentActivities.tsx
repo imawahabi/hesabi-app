@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#0F172A',
     fontFamily: 'Cairo-Bold',
