@@ -91,7 +91,7 @@ const OnboardingStep: React.FC<OnboardingStepProps> = ({
           {/* Temp Button */}
           <TouchableOpacity
             style={styles.skipDevButton}
-            onPress={() => router.push('/splash')}
+            onPress={() => router.push('/dashboard')}
             activeOpacity={0.7}
           >
             <Text style={styles.skipDevText}>تخطي مؤقتاً </Text>
