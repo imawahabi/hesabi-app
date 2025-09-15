@@ -1,9 +1,10 @@
 import { Cairo_400Regular, Cairo_600SemiBold, Cairo_700Bold } from '@expo-google-fonts/cairo';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { I18nManager } from 'react-native';
+import { I18nManager, View } from 'react-native';
+import BottomNav from './components/BottomNav';
 
 import './global.css';
 
@@ -47,6 +48,19 @@ export default function RootLayout() {
     'Cairo-Bold': Cairo_700Bold,
   });
 
+  const pathname = usePathname();
+  const isMainRoute = ['/dashboard', '/commitments', '/analytics', '/settings'].includes(pathname);
+  const currentRouteLabel =
+    pathname === '/dashboard'
+      ? 'الرئيسية'
+      : pathname === '/commitments'
+      ? 'الالتزامات'
+      : pathname === '/analytics'
+      ? 'التحليلات'
+      : pathname === '/settings'
+      ? 'الاعدادات'
+      : undefined;
+
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -58,40 +72,74 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: false,
-      }}
-    >
-      <Stack.Screen
-        name="index"
-        options={{
+    <View style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
           headerShown: false,
-          title: '',
+          gestureEnabled: false,
         }}
-      />
-      <Stack.Screen
-        name="onboarding"
-        options={{
-          headerShown: false,
-          title: '',
-        }}
-      />
-      <Stack.Screen
-        name="auth"
-        options={{
-          headerShown: false,
-          title: '',
-        }}
-      />
-      <Stack.Screen
-        name="dashboard"
-        options={{
-          headerShown: false,
-          title: '',
-        }}
-      />
-    </Stack>
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+            title: '',
+          }}
+        />
+        <Stack.Screen
+          name="onboarding"
+          options={{
+            headerShown: false,
+            title: '',
+          }}
+        />
+        <Stack.Screen
+          name="auth"
+          options={{
+            headerShown: false,
+            title: '',
+          }}
+        />
+        <Stack.Screen
+          name="dashboard"
+          options={{
+            headerShown: false,
+            title: '',
+            animation: 'none',
+          }}
+        />
+        <Stack.Screen
+          name="commitments"
+          options={{
+            headerShown: false,
+            title: '',
+            animation: 'none',
+          }}
+        />
+        <Stack.Screen
+          name="analytics"
+          options={{
+            headerShown: false,
+            title: '',
+            animation: 'none',
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerShown: false,
+            title: '',
+            animation: 'none',
+          }}
+        />
+      </Stack>
+
+      {isMainRoute && (
+        <BottomNav
+          currentRoute={currentRouteLabel}
+          onAddCommitment={() => router.push('/commitments?add=true')}
+        />
+      )}
+    </View>
   );
 }

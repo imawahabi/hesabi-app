@@ -1,4 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
+import {
+  Home3,
+  Card as CardIcon,
+  Wallet,
+  Chart,
+  Notification as Bell,
+  Category,
+  MedalStar,
+  Calculator,
+  ProfileCircle,
+  Setting2,
+  ShieldTick,
+  MessageQuestion,
+} from 'iconsax-react-nativejs';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -46,6 +60,24 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
     { id: 'security', title: 'الأمان والخصوصية', icon: 'shield-checkmark', color: '#6B7280' },
     { id: 'help', title: 'المساعدة والدعم', icon: 'help-circle', color: '#6B7280' },
   ];
+
+  const getIconCmp = (name: string) => {
+    switch (name) {
+      case 'home': return Home3;
+      case 'card': return CardIcon;
+      case 'wallet': return Wallet;
+      case 'bar-chart': return Chart;
+      case 'notifications': return Bell;
+      case 'grid': return Category;
+      case 'trophy': return MedalStar;
+      case 'calculator': return Calculator;
+      case 'person': return ProfileCircle;
+      case 'settings': return Setting2;
+      case 'shield-checkmark': return ShieldTick;
+      case 'help-circle': return MessageQuestion;
+      default: return Category;
+    }
+  };
 
   useEffect(() => {
     if (visible) {
@@ -133,7 +165,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
           <ScrollView style={styles.menuContent} showsVerticalScrollIndicator={false}>
             {/* Main Menu */}
             <View style={styles.menuSection}>
-              <Text style={styles.sectionTitle}>القائمة الرئيسية</Text>
+              <View style={styles.sectionHeaderRow}>
+                <View style={[styles.sectionHeaderIcon, { backgroundColor: '#3B82F620' }]}>
+                  <Home3 size={16} color="#3B82F6" variant={'Bold'} />
+                </View>
+                <Text style={styles.sectionTitle}>القائمة الرئيسية</Text>
+              </View>
               {menuItems.map((item) => (
                 <View key={item.id}>
                   <TouchableOpacity 
@@ -143,7 +180,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
                   >
                     <View style={styles.menuItemLeft}>
                       <View style={[styles.menuIcon, { backgroundColor: `${item.color}20` }] }>
-                        <Ionicons name={item.icon as any} size={20} color={item.color} />
+                        {(() => { const IconCmp = getIconCmp(item.icon); return <IconCmp size={20} color={item.color} variant={'Bold'} />; })()}
                       </View>
                       <Text style={styles.menuItemText}>{item.title}</Text>
                     </View>
@@ -162,7 +199,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
 
             {/* Settings Menu */}
             <View style={styles.menuSection}>
-              <Text style={styles.sectionTitle}>الإعدادات</Text>
+              <View style={styles.sectionHeaderRow}>
+                <View style={[styles.sectionHeaderIcon, { backgroundColor: '#6B728020' }]}>
+                  <Setting2 size={16} color="#6B7280" variant={'Bold'} />
+                </View>
+                <Text style={styles.sectionTitle}>الإعدادات</Text>
+              </View>
               {settingsItems.map((item) => (
                   <View key={item.id}>
                     <TouchableOpacity 
@@ -172,7 +214,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
                     >
                       <View style={styles.menuItemLeft}>
                         <View style={[styles.menuIcon, { backgroundColor: `${item.color}20` }] }>
-                          <Ionicons name={item.icon as any} size={20} color={item.color} />
+                          {(() => { const IconCmp = getIconCmp(item.icon); return <IconCmp size={20} color={item.color} variant={'Bold'} />; })()}
                         </View>
                         <Text style={styles.menuItemText}>{item.title}</Text>
                       </View>
@@ -190,14 +232,14 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
                   activeOpacity={0.8}
                   onPress={onAddCommitment}
                 >
-                  <Ionicons name="add-circle" size={20} color="#3B82F6" />
+                  <Ionicons name="add" size={20} color="#3B82F6" />
                   <Text style={styles.quickActionText}>إضافة التزام جديد</Text>
                 </TouchableOpacity>
               </View>
               
               <View>
                 <TouchableOpacity style={styles.quickActionButton} activeOpacity={0.8}>
-                  <Ionicons name="card" size={20} color="#10B981" />
+                  <CardIcon size={20} color="#10B981" variant={'Bold'} />
                   <Text style={styles.quickActionText}>تسجيل دفعة</Text>
                 </TouchableOpacity>
               </View>
@@ -324,6 +366,21 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     paddingHorizontal: 20,
     marginBottom: 15,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+    gap: 8,
+  },
+  sectionHeaderIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
   menuItem: {
     flexDirection: 'row-reverse',

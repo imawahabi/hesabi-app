@@ -1,5 +1,19 @@
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import {
+  Bag2,
+  Calendar,
+  Car,
+  Card as CardIcon,
+  Category,
+  Filter,
+  Flash,
+  Home3,
+  Mobile,
+  Money,
+  Profile2User,
+  Receipt1,
+  SearchNormal1,
+} from 'iconsax-react-nativejs';
 import React, { useRef, useState } from 'react';
 import {
   Animated,
@@ -11,7 +25,6 @@ import {
   View
 } from 'react-native';
 import AddCommitmentModal from './components/AddCommitmentModal';
-import BottomNav from './components/BottomNav';
 import SubPageHeader from './components/SubPageHeader';
 
 const CommitmentsScreen = () => {
@@ -44,7 +57,7 @@ const CommitmentsScreen = () => {
       id: '2',
       name: 'إيجار الشقة',
       type: 'rent',
-      source: 'محمد العلي',
+      source: 'محمد أحمد',
       amount: 350.000,
       remainingAmount: 350.000,
       monthlyPayment: 350.000,
@@ -71,6 +84,14 @@ const CommitmentsScreen = () => {
       progress: 0.5,
     },
   ]);
+
+  // Open Add Commitment modal when navigating with ?add=true
+  const params = useLocalSearchParams<{ add?: string }>();
+  React.useEffect(() => {
+    if (params.add === 'true') {
+      setShowAddModal(true);
+    }
+  }, [params.add]);
 
   // اشتقاق الالتزامات بناءً على نوع الالتزام أولاً
   const typeFilteredCommitments = React.useMemo(() => (
@@ -139,7 +160,7 @@ const CommitmentsScreen = () => {
   const renderSearchAndFilters = () => (
     <View style={styles.searchContainer}>
       <View style={styles.searchBox}>
-        <Ionicons name="search" size={18} color="#9CA3AF" />
+        <SearchNormal1 size={18} color="#9CA3AF" variant={"Outline"} />
         <TextInput
           style={styles.searchInput}
           placeholder="البحث في الالتزامات..."
@@ -169,11 +190,18 @@ const CommitmentsScreen = () => {
               onPress={() => setSelectedTypeFilter(filter.id)}
               activeOpacity={0.8}
             >
-              <Ionicons
-                name={filter.icon}
-                size={18}
-                color={selectedTypeFilter === filter.id ? 'white' : filter.color}
-              />
+              {(() => {
+                const color = selectedTypeFilter === filter.id ? 'white' : filter.color;
+                const variant = selectedTypeFilter === filter.id ? 'Bold' : 'Outline';
+                const IconCmp =
+                  filter.id === 'all' ? Category :
+                  filter.id === 'bank_loan' ? CardIcon :
+                  filter.id === 'personal_debt' ? Profile2User :
+                  filter.id === 'installments' ? Bag2 :
+                  filter.id === 'rent' ? Home3 :
+                  filter.id === 'utilities' ? Flash : Category;
+                return <IconCmp size={18} color={color} variant={variant as any} />;
+              })()}
               <Text style={[
                 styles.typeFilterText,
                 selectedTypeFilter === filter.id && styles.typeFilterTextActive
@@ -248,7 +276,13 @@ const CommitmentsScreen = () => {
       <View style={styles.cardContent}>
         <View style={styles.cardHeader}>
           <View style={[styles.typeIcon, { backgroundColor: commitment.color }]}>
-            <Ionicons name={commitment.icon} size={20} color="white" />
+            {(() => {
+              const IconCmp =
+                commitment.icon === 'car' ? Car :
+                commitment.icon === 'home' ? Home3 :
+                commitment.icon === 'phone-portrait' ? Mobile : Receipt1;
+              return <IconCmp size={20} color="white" variant={'Bold'} />;
+            })()}
           </View>
           <View style={styles.commitmentInfo}>
             <Text style={styles.commitmentName}>{commitment.name}</Text>
@@ -295,7 +329,7 @@ const CommitmentsScreen = () => {
 
         <View style={styles.cardFooter}>
           <View style={styles.dueDateContainer}>
-            <Ionicons name="calendar-outline" size={14} color="#6B7280" />
+            <Calendar size={14} color="#6B7280" variant={'Outline'} />
             <Text style={styles.dueDate}>{commitment.dueDate}</Text>
           </View>
           <Text style={styles.monthlyAmount}>
@@ -341,7 +375,7 @@ const CommitmentsScreen = () => {
       {filteredCommitments.length === 0 && (
         <View style={styles.emptyState}>
           <View style={styles.emptyIconCircle}>
-            <Ionicons name="search" size={22} color="#3B82F6" />
+            <SearchNormal1 size={22} color="#3B82F6" variant={'Bold'} />
           </View>
           <Text style={styles.emptyTitle}>لا توجد نتائج</Text>
           <Text style={styles.emptySubtitle}>
@@ -356,7 +390,7 @@ const CommitmentsScreen = () => {
             }}
             activeOpacity={0.8}
           >
-            <Ionicons name="funnel" size={16} color="#1D4ED8" />
+            <Filter size={16} color="#1D4ED8" variant={'Bold'} />
             <Text style={styles.emptyActionText}>إزالة الفلاتر</Text>
           </TouchableOpacity>
         </View>
@@ -384,7 +418,7 @@ const CommitmentsScreen = () => {
         <View style={styles.typeSummaryRow}>
           <View style={[styles.typeSummaryCard]}> 
             <View style={styles.typeSummaryIconCircle}>
-              <Ionicons name="calendar" size={18} color="#1D4ED8" />
+              <Calendar size={18} color="#1D4ED8" variant={'Bold'} />
             </View>
             <View style={styles.typeSummaryTextBox}>
               <Text style={styles.typeSummaryLabel}>القسط الشهري</Text>
@@ -393,7 +427,7 @@ const CommitmentsScreen = () => {
           </View>
           <View style={[styles.typeSummaryCard]}> 
             <View style={[styles.typeSummaryIconCircle, { backgroundColor: '#ECFDF5' }]}>
-              <Ionicons name="cash" size={18} color="#059669" />
+              <Money size={18} color="#059669" variant={'Bold'} />
             </View>
             <View style={styles.typeSummaryTextBox}>
               <Text style={styles.typeSummaryLabel}>إجمالي المتبقي</Text>
@@ -411,6 +445,7 @@ const CommitmentsScreen = () => {
         title="الالتزامات المالية"
         subtitle={`${commitments.length} التزام نشط`}
         scrollY={scrollY}
+        titleIcon={<CardIcon size={20} color="#111827" variant={'Outline'} />}
         showBackButton={false}
         rightAction={{
           icon: 'filter',
@@ -433,15 +468,17 @@ const CommitmentsScreen = () => {
         {renderCommitmentsList()}
       </Animated.ScrollView>
 
-      <BottomNav
-        onAddCommitment={() => setShowAddModal(true)}
-        currentRoute="الالتزامات"
-      />
-
       <AddCommitmentModal
         visible={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onSubmit={handleAddCommitment}
+        onClose={() => {
+          setShowAddModal(false);
+          // Clear the query param to avoid re-opening on remount
+          router.replace('/commitments');
+        }}
+        onSubmit={(data) => {
+          handleAddCommitment(data);
+          router.replace('/commitments');
+        }}
       />
     </View>
   );
@@ -495,6 +532,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
+    marginTop: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,

@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { Cards, Home3, StatusUp, UserOctagon } from 'iconsax-react-nativejs';
 import React from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -13,12 +15,19 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
   const [active, setActive] = React.useState(currentRoute || 'الرئيسية');
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
+  // Keep active tab in sync with the current route provided by parent
+  React.useEffect(() => {
+    if (currentRoute && currentRoute !== active) {
+      setActive(currentRoute);
+    }
+  }, [currentRoute, active]);
+
   const navItems = [
-    { name: 'الرئيسية', activeIcon: 'home' as const, inactiveIcon: 'home-outline' as const, route: '/dashboard' as const },
-    { name: 'الالتزامات', activeIcon: 'list' as const, inactiveIcon: 'list-outline' as const, route: '/commitments' as const },
-    { name: '+', activeIcon: 'add' as const, inactiveIcon: 'add' as const, route: null },
-    { name: 'التحليلات', activeIcon: 'analytics' as const, inactiveIcon: 'analytics-outline' as const, route: '/analytics' as const },
-    { name: 'الاعدادات', activeIcon: 'settings' as const, inactiveIcon: 'settings-outline' as const, route: '/settings' as const },
+    { name: 'الرئيسية', Icon: Home3, route: '/dashboard' as const },
+    { name: 'الالتزامات', Icon: Cards, route: '/commitments' as const },
+    { name: '+', Icon: null as any, route: null },
+    { name: 'التحليلات', Icon: StatusUp, route: '/analytics' as const },
+    { name: 'الاعدادات', Icon: UserOctagon, route: '/settings' as const },
   ];
 
   const handleFabPress = () => {
@@ -41,14 +50,21 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.navWrapper}>
+      <BlurView intensity={35} tint="light" style={styles.navWrapper}>
+        {/* Subtle translucent overlay for premium glass effect */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0.35)", "rgba(255,255,255,0.15)"]}
+          style={styles.glassOverlay}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
         <View style={styles.navContainer}>
           {navItems.map((item, index) => {
             const isCenter = index === 2; // Make the third item (+) the center FAB
             
             if (isCenter) {
               return (
-                <Animated.View key={item.name} style={[styles.fabContainer, { transform: [{ scale: scaleAnim }] }]}>
+                <Animated.View key={item.name} style={[styles.fabContainer, { transform: [{ scale: scaleAnim }] }, { paddingHorizontal: 12 }]}>
                   <TouchableOpacity
                     style={styles.fabTouchable}
                     onPress={handleFabPress}
@@ -60,11 +76,7 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                     >
-                      <Ionicons
-                        name="add"
-                        size={28}
-                        color="white"
-                      />
+                      <Ionicons name="add" size={30} color="#FFFFFF" />
                     </LinearGradient>
                   </TouchableOpacity>
                 </Animated.View>
@@ -87,10 +99,10 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
                 }}
                 activeOpacity={0.6}
               >
-                <Ionicons
-                  name={active === item.name ? item.activeIcon : item.inactiveIcon}
+                <item.Icon
                   size={24}
                   color={active === item.name ? '#3B82F6' : '#9CA3AF'}
+                  variant={active === item.name ? 'Bold' : 'Outline'}
                 />
                 <Text style={[
                   styles.navText,
@@ -102,7 +114,7 @@ const BottomNav = ({ onAddCommitment, currentRoute }: BottomNavProps) => {
             );
           })}
         </View>
-      </View>
+      </BlurView>
     </View>
   );
 };
@@ -117,15 +129,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   navWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255,255,255,0.4)',
     borderRadius: 20,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 5,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    opacity: 0.95,
+    overflow: 'hidden',
+  },
+  glassOverlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   },
   navContainer: {
     flexDirection: 'row-reverse',
@@ -139,8 +162,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navText: {
-    fontSize: 11,
-    color: '#9CA3AF',
+    fontSize: 12,
+    color: '#7d838c',
     fontFamily: 'Cairo-Regular',
     marginTop: 4,
     textAlign: 'center',

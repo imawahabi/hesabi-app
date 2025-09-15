@@ -1,5 +1,4 @@
-
-import { Ionicons } from '@expo/vector-icons';
+import { Card as CardIcon, Money, StatusUp, Wallet } from 'iconsax-react-nativejs';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -12,9 +11,9 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = useMemo(() => [
-    { id: 'overview', label: 'نظرة عامة', icon: 'analytics' as const },
-    { id: 'repayment', label: 'السداد', icon: 'card' as const },
-    { id: 'savings', label: 'المدخرات', icon: 'wallet' as const },
+    { id: 'overview', label: 'نظرة عامة', Icon: StatusUp },
+    { id: 'repayment', label: 'السداد', Icon: CardIcon },
+    { id: 'savings', label: 'المدخرات', Icon: Wallet },
   ], []);
 
   // Animated flex for tabs: active gets larger space
@@ -66,9 +65,9 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
           subtitle: 'الدخل الشهري',
           salaryCountdown: daysToSalary,
           stats: [
-            { icon: 'card' as const, color: '#EF4444', label: 'إجمالي الالتزامات', value: data.monthlyCommitments },
-            { icon: 'wallet' as const, color: '#10B981', label: 'المتبقي شهرياً', value: monthlySavings },
-            { icon: 'trending-up' as const, color: data.debtToIncomeRatio > 50 ? '#EF4444' : '#10B981', label: 'نسبة الدين للدخل', value: Math.round(data.debtToIncomeRatio), isPercentage: true },
+            { Icon: CardIcon, color: '#EF4444', label: 'إجمالي الالتزامات', value: data.monthlyCommitments },
+            { Icon: Wallet, color: '#10B981', label: 'المتبقي شهرياً', value: monthlySavings },
+            { Icon: StatusUp, color: data.debtToIncomeRatio > 50 ? '#EF4444' : '#10B981', label: 'نسبة الدين للدخل', value: Math.round(data.debtToIncomeRatio), isPercentage: true },
           ]
         };
       case 'repayment':
@@ -77,8 +76,8 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
           subtitle: monthsToFreedom <= 12 ? 'للتخلص من الديون' : 'للتخلص من الالتزامات',
           isMonths: true,
           stats: [
-            { icon: 'cash' as const, color: '#F59E0B', label: 'دفعة شهرية', value: monthlyPayment },
-            { icon: 'trending-up' as const, color: '#3B82F6', label: 'التقدم', value: Math.round(progressPercentage), isPercentage: true },
+            { Icon: Money, color: '#F59E0B', label: 'دفعة شهرية', value: monthlyPayment },
+            { Icon: StatusUp, color: '#3B82F6', label: 'التقدم', value: Math.round(progressPercentage), isPercentage: true },
           ]
         };
       case 'savings':
@@ -86,8 +85,8 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
           amount: monthlySavings,
           subtitle: 'المبلغ المدخر شهرياً',
           stats: [
-            { icon: 'trending-up' as const, color: '#10B981', label: 'نسبة الادخار', value: Math.round(savingsRatio), isPercentage: true },
-            { icon: 'wallet' as const, color: '#3B82F6', label: 'إجمالي المدخر', value: totalSaved },
+            { Icon: StatusUp, color: '#10B981', label: 'نسبة الادخار', value: Math.round(savingsRatio), isPercentage: true },
+            { Icon: Wallet, color: '#3B82F6', label: 'إجمالي المدخر', value: totalSaved },
           ]
         };
       default:
@@ -149,10 +148,13 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
                   style={[
                     styles.tabIconContainer,
                     activeTab === tab.id && styles.activeTabIconContainer,
-                    { transform: [{ scale: activeTab === tab.id ? 1.05 : 1 }] },
                   ]}
                 >
-                  <Ionicons name={tab.icon} size={16} color={activeTab === tab.id ? '#FFFFFF' : '#6B7280'} />
+                  <tab.Icon
+                    size={20}
+                    color={activeTab === tab.id ? '#FFFFFF' : '#6B7280'}
+                    variant={activeTab === tab.id ? 'Bold' : 'Outline'}
+                  />
                 </Animated.View>
                 <Text style={[styles.tabText, activeTab === tab.id && styles.activeTabText]}>{tab.label}</Text>
               </TouchableOpacity>
@@ -185,7 +187,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
                     {(tabContent as any).salaryCountdown?.toLocaleString()}
                     <Text style={styles.unitText}>يوم</Text>
                   </Text>
-                  <Text style={styles.amountSubtitle} numberOfLines={2}>حتى الراتب</Text>
+                  <Text style={styles.amountSubtitle} numberOfLines={2}>حتى موعد الراتب</Text>
                 </View>
               </>
             )}
@@ -197,7 +199,7 @@ const FinancialSummaryCard = ({ data, scrollY }: FinancialSummaryCardProps) => {
           {tabContent.stats?.map((stat: any, index: number) => (
             <View key={index} style={styles.statCard}>
               <View style={[styles.statIconBg, { backgroundColor: `${stat.color}15` }]}>
-                <Ionicons name={stat.icon} size={16} color={stat.color} />
+                <stat.Icon size={18} color={stat.color} variant={'Bold'} />
               </View>
               <Text style={styles.statValue}>
                 {stat.value?.toLocaleString()}
@@ -313,9 +315,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(59, 130, 246, 0.15)',
   },
   tabIconContainer: {
-    width: 25,
-    height: 25,
-    borderRadius: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 10,
     backgroundColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',

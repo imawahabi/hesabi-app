@@ -1,4 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
+import {
+  Notification as Bell,
+  CloudAdd,
+  DocumentDownload,
+  FingerScan,
+  InfoCircle,
+  LanguageCircle,
+  Lock,
+  Logout,
+  Message,
+  MessageQuestion,
+  Moon,
+  ProfileCircle,
+  Setting2,
+  ShieldTick,
+  Trash,
+  Wallet as WalletIcon,
+} from 'iconsax-react-nativejs';
 import React, { useRef, useState } from 'react';
 import {
   Alert,
@@ -9,7 +27,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import BottomNav from './components/BottomNav';
 import SubPageHeader from './components/SubPageHeader';
 
 const SettingsScreen = () => {
@@ -20,11 +37,32 @@ const SettingsScreen = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const userInfo = {
-    name: 'أحمد محمد العلي',
-    email: 'ahmed@example.com',
-    phone: '+965 99887766',
-    monthlyIncome: 1000.000,
-    joinDate: '2024-01-15',
+    name: 'محمد أحمد العقاد',
+    email: 'imawahabi@gmail.com',
+    phone: '+965 65500470',
+    monthlyIncome: 520.000,
+    joinDate: '2025-01-15',
+  };
+
+  const getIconsaxByName = (name: string): React.ComponentType<any> => {
+    switch (name) {
+      case 'person': return ProfileCircle;
+      case 'wallet': return WalletIcon;
+      case 'lock-closed': return Lock;
+      case 'notifications': return Bell;
+      case 'finger-print': return FingerScan;
+      case 'shield-checkmark': return ShieldTick;
+      case 'moon': return Moon;
+      case 'cloud-upload': return CloudAdd;
+      case 'download': return DocumentDownload;
+      case 'language': return LanguageCircle;
+      case 'help-circle': return MessageQuestion;
+      case 'chatbubble-ellipses': return Message;
+      case 'information-circle': return InfoCircle;
+      case 'log-out': return Logout;
+      case 'trash': return Trash;
+      default: return InfoCircle;
+    }
   };
 
   const settingSections = [
@@ -215,14 +253,14 @@ const SettingsScreen = () => {
     <View style={styles.userCard}>
       <View style={styles.userAvatar}>
         <Text style={styles.userInitials}>
-          {userInfo.name.split(' ').map(n => n[0]).join('')}
+          {userInfo.name.split('.').map(n => n[0]).join('')}
         </Text>
       </View>
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{userInfo.name}</Text>
         <Text style={styles.userEmail}>{userInfo.email}</Text>
         <Text style={styles.userJoinDate}>
-          عضو منذ {new Date(userInfo.joinDate).toLocaleDateString('ar-KW')}
+          عضو منذ {new Date(userInfo.joinDate).toLocaleDateString('ar-US')}
         </Text>
       </View>
       <TouchableOpacity style={styles.editProfileButton}>
@@ -239,7 +277,10 @@ const SettingsScreen = () => {
       activeOpacity={0.7}
     >
       <View style={[styles.settingIcon, { backgroundColor: `${item.color}15` }]}>
-        <Ionicons name={item.icon} size={20} color={item.color} />
+        {(() => {
+          const IconCmp = getIconsaxByName(item.icon);
+          return <IconCmp size={20} color={item.color} variant={'Bold'} />;
+        })()}
       </View>
       
       <View style={styles.settingContent}>
@@ -268,7 +309,7 @@ const SettingsScreen = () => {
       activeOpacity={0.7}
     >
       <View style={[styles.settingIcon, { backgroundColor: `${item.color}15` }]}>
-        <Ionicons name={item.icon} size={20} color={item.color} />
+        {(() => { const IconCmp = getIconsaxByName(item.icon); return <IconCmp size={20} color={item.color} variant={'Bold'} />; })()}
       </View>
       
       <View style={styles.settingContent}>
@@ -293,9 +334,10 @@ const SettingsScreen = () => {
     <View style={styles.container}>
       <SubPageHeader
         title="الإعدادات"
-        subtitle="إدارة حسابك وتخصيص التطبيق"
         scrollY={scrollY}
         showBackButton={false}
+        titleIcon={<Setting2 size={22} color="#111827" variant={'Outline'} />}
+        compact={true}
       />
       
       <Animated.ScrollView
@@ -329,8 +371,6 @@ const SettingsScreen = () => {
         
         <View style={styles.bottomSpacing} />
       </Animated.ScrollView>
-
-      <BottomNav currentRoute="الاعدادات" />
     </View>
   );
 };
@@ -375,6 +415,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,
+    marginTop: 24,
     flexDirection: 'row-reverse',
     alignItems: 'center',
     shadowColor: '#000',
@@ -393,7 +434,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   userInitials: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
     fontFamily: 'Cairo-Bold',
@@ -412,14 +453,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     textAlign: 'right',
-    marginTop: 4,
     fontFamily: 'Cairo-Regular',
   },
   userJoinDate: {
     fontSize: 12,
     color: '#9CA3AF',
     textAlign: 'right',
-    marginTop: 4,
     fontFamily: 'Cairo-Regular',
   },
   editProfileButton: {

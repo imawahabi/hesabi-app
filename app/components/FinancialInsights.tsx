@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Activity, TickCircle } from 'iconsax-react-nativejs';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -64,7 +65,7 @@ const FinancialInsights = ({ insights, availableIncome, debtToIncomeRatio, payof
       {/* Financial Health Summary */}
       <View style={styles.summaryCard}>
         <View style={styles.summaryHeader}>
-          <Ionicons name="analytics" size={20} color="#3B82F6" />
+          <Activity size={20} color="#3B82F6" variant="Bold" />
           <Text style={styles.summaryTitle}>ملخص الوضع المالي</Text>
         </View>
         <View style={styles.summaryMetrics}>
@@ -118,15 +119,15 @@ const FinancialInsights = ({ insights, availableIncome, debtToIncomeRatio, payof
         <Text style={styles.quickTipsTitle}>نصائح سريعة</Text>
         <View style={styles.quickTipsList}>
           <View style={styles.quickTip}>
-            <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+            <TickCircle size={16} color="#10B981" variant="Bold" />
             <Text style={styles.quickTipText}>ادفع أكثر من الحد الأدنى للأقساط</Text>
           </View>
           <View style={styles.quickTip}>
-            <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+            <TickCircle size={16} color="#10B981" variant="Bold" />
             <Text style={styles.quickTipText}>راجع نفقاتك الشهرية بانتظام</Text>
           </View>
           <View style={styles.quickTip}>
-            <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+            <TickCircle size={16} color="#10B981" variant="Bold" />
             <Text style={styles.quickTipText}>ابدأ بسداد الديون عالية الفائدة</Text>
           </View>
         </View>

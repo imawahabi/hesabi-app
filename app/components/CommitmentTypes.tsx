@@ -1,4 +1,4 @@
-
+import { Category, Home3, Card as CardIcon, Clock, Profile2User, Add, AddCircle } from 'iconsax-react-nativejs';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
@@ -29,14 +29,14 @@ const CommitmentTypes: React.FC<CommitmentTypesProps> = ({ types, onAddCommitmen
                   alignItems: 'center',
                 }}
               >
-                <Ionicons name="apps" size={22} color="#3B82F6" />
+                <Category size={22} color="#3B82F6" variant="Bold" />
               </View>
             </View>
             <Text style={styles.sectionTitle}>أنواع الالتزامات</Text>
           </View>
           <TouchableOpacity style={styles.moreButton} onPress={() => router.push('/commitments')}>
             <Text style={styles.moreText}>المزيد</Text>
-            <Ionicons name="chevron-back" size={14} color="#3B82F6" />
+            <Ionicons name="chevron-back" size={18} color="#3B82F6" />
           </TouchableOpacity>
         </View>
       </View>
@@ -52,7 +52,15 @@ const CommitmentTypes: React.FC<CommitmentTypesProps> = ({ types, onAddCommitmen
               <View style={styles.cardHeaderCentered}>
                 <View style={{ position: 'relative' }}>
                   <View style={[styles.iconContainer, { backgroundColor: type.color }]}> 
-                    <Ionicons name={type.icon} size={22} color="white" />
+                    {(() => {
+                      const IconComp =
+                        type.icon === 'home' ? Home3 :
+                        type.icon === 'card' ? CardIcon :
+                        type.icon === 'time' ? Clock :
+                        type.icon === 'people' ? Profile2User :
+                        Home3;
+                      return <IconComp size={22} color="white" variant="Bold" />;
+                    })()}
                   </View>
                   <View style={[styles.iconBadge, { backgroundColor: type.color }]}> 
                     <Text style={styles.iconBadgeText}>{type.count}</Text>
@@ -90,10 +98,10 @@ const CommitmentTypes: React.FC<CommitmentTypesProps> = ({ types, onAddCommitmen
           <View style={styles.addCardContent}>
             <View style={styles.addIconWrapper}>
               <View style={styles.addIconContainer}>
-                <Ionicons name="add" size={24} color="#3B82F6" />
+                <Add size={24} color="#3B82F6" variant="Bold" />
               </View>
               <View style={styles.addPlusIcon}>
-                <Ionicons name="add-circle" size={18} color="#10B981" />
+                <AddCircle size={18} color="#10B981" variant="Bold" />
               </View>
             </View>
             <Text style={styles.addTitle}>إضافة التزام</Text>

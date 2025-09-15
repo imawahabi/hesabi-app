@@ -1,4 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
+import {
+  Money,
+  Mobile,
+  Card as CardIcon,
+  More,
+  Car,
+  TickCircle,
+  CloseCircle,
+} from 'iconsax-react-nativejs';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -38,6 +47,16 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
   onSubmit,
   commitmentData
 }) => {
+  const getIconsaxByName = (name: string): React.ComponentType<any> => {
+    switch (name) {
+      case 'cash': return Money;
+      case 'phone-portrait': return Mobile;
+      case 'card': return CardIcon;
+      case 'ellipsis-horizontal': return More;
+      case 'car': return Car;
+      default: return CardIcon;
+    }
+  };
   const [formData, setFormData] = useState({
     amount: '',
     date: '',
@@ -158,7 +177,7 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
       >
         <View style={styles.summaryHeader}>
           <View style={styles.summaryIcon}>
-            <Ionicons name={commitmentData?.icon as any || 'card'} size={20} color="white" />
+            {(() => { const IconCmp = getIconsaxByName(commitmentData?.icon || 'card'); return <IconCmp size={20} color="white" variant={'Bold'} />; })()}
           </View>
           <View style={styles.summaryInfo}>
             <Text style={styles.summaryTitle}>{commitmentData?.name || 'التزام مالي'}</Text>
@@ -242,11 +261,7 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
               onPress={() => setFormData({...formData, method: method.id})}
             >
               <View style={[styles.methodIcon, { backgroundColor: method.color }]}>
-                <Ionicons 
-                  name={method.icon as any} 
-                  size={20} 
-                  color="white"
-                />
+                {(() => { const IconCmp = getIconsaxByName(method.icon); return <IconCmp size={20} color="white" variant={'Bold'} />; })()}
               </View>
               <Text style={[
                 styles.methodText,
@@ -256,7 +271,7 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
               </Text>
               {formData.method === method.id && (
                 <View style={styles.methodCheckmark}>
-                  <Ionicons name="checkmark-circle" size={16} color={method.color} />
+                  <TickCircle size={16} color={method.color} variant={'Bold'} />
                 </View>
               )}
             </TouchableOpacity>
@@ -296,7 +311,7 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
-          <Ionicons name="checkmark-circle" size={20} color="white" />
+          <TickCircle size={20} color="white" variant={'Bold'} />
           <Text style={styles.buttonText}>تسجيل الدفعة</Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -305,7 +320,7 @@ const PaymentRecordModal: React.FC<PaymentRecordModalProps> = ({
         style={[styles.actionButton, styles.secondaryButton]}
         onPress={handleClose}
       >
-        <Ionicons name="close-circle" size={20} color="#6B7280" />
+        <CloseCircle size={20} color="#6B7280" variant={'Bold'} />
         <Text style={[styles.buttonText, { color: '#6B7280' }]}>إلغاء</Text>
       </TouchableOpacity>
     </View>

@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Notification } from 'iconsax-react-nativejs';
 import React, { useRef, useState } from 'react';
 import { Animated, Easing, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AddCommitmentModal from './components/AddCommitmentModal';
-import BottomNav from './components/BottomNav';
 import CommitmentTypes from './components/CommitmentTypes';
 import FinancialSummaryCard from './components/FinancialSummaryCard';
 import Header from './components/Header';
@@ -120,7 +120,17 @@ const upcomingCommitmentsData = [
   },
 ];
 
-const recentActivitiesData = [
+type RecentActivityItem = {
+  id: number;
+  title: string;
+  time: string;
+  amount?: number;
+  color: string;
+  type: 'payment' | 'reminder' | 'new' | 'update';
+  progress?: string;
+};
+
+const recentActivitiesData: RecentActivityItem[] = [
   { 
     id: 1, 
     title: 'تم سداد قسط السيارة', 
@@ -397,7 +407,7 @@ export default function Dashboard() {
               onPress={handleMenuPress}
               activeOpacity={0.7}
             >
-              <Ionicons name="menu" size={22} color="#1F2937" />
+              <Ionicons name="menu" size={28} color="#363636" />
             </TouchableOpacity>
             
             <View style={styles.stickyTitleContainer}>
@@ -409,7 +419,7 @@ export default function Dashboard() {
               onPress={handleNotificationPress}
               activeOpacity={0.7}
             >
-              <Ionicons name="notifications-outline" size={22} color="#1F2937" />
+              <Notification size={22} color="#1F2937" variant="Bold" />
               <View style={styles.notificationDot} />
             </TouchableOpacity>
           </View>
@@ -529,10 +539,6 @@ export default function Dashboard() {
           </Animated.View>
         </View>
       </Animated.ScrollView>
-      <BottomNav
-        onAddCommitment={() => setShowAddCommitmentModal(true)}
-        currentRoute="الرئيسية"
-      />
       
       
       <AddCommitmentModal 

@@ -1,4 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
+// removed unused Ionicons import
+import {
+  Money,
+  Card as CardIcon,
+  DocumentText,
+  Mobile,
+  Car,
+  TickCircle,
+  CloseCircle,
+} from 'iconsax-react-nativejs';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useRef, useState } from 'react';
@@ -6,8 +15,6 @@ import {
   Alert,
   Animated,
   Dimensions,
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -100,11 +107,16 @@ const PaymentRecordScreen = () => {
               ]}
               onPress={() => setFormData({...formData, method: method.id})}
             >
-              <Ionicons 
-                name={method.icon as any} 
-                size={24} 
-                color={formData.method === method.id ? '#3B82F6' : '#6B7280'} 
-              />
+              {(() => {
+                const color = formData.method === method.id ? '#3B82F6' : '#6B7280';
+                const variant = formData.method === method.id ? 'Bold' : 'Outline';
+                const IconCmp =
+                  method.icon === 'cash' ? Money :
+                  method.icon === 'card' ? CardIcon :
+                  method.icon === 'document' ? DocumentText :
+                  method.icon === 'phone-portrait' ? Mobile : Money;
+                return <IconCmp size={24} color={color} variant={variant as any} />;
+              })()}
               <Text style={[
                 styles.methodText,
                 formData.method === method.id && styles.methodTextSelected
@@ -155,7 +167,7 @@ const PaymentRecordScreen = () => {
       >
         <View style={styles.summaryHeader}>
           <View style={styles.summaryIcon}>
-            <Ionicons name="car" size={20} color="white" />
+            <Car size={20} color="white" variant="Bold" />
           </View>
           <View style={styles.summaryInfo}>
             <Text style={styles.summaryTitle}>قسط السيارة</Text>
@@ -193,7 +205,7 @@ const PaymentRecordScreen = () => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
-          <Ionicons name="checkmark-circle" size={20} color="white" />
+          <TickCircle size={20} color="white" variant="Bold" />
           <Text style={styles.buttonText}>تسجيل الدفعة</Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -202,7 +214,7 @@ const PaymentRecordScreen = () => {
         style={[styles.actionButton, styles.secondaryButton]}
         onPress={() => router.back()}
       >
-        <Ionicons name="close-circle" size={20} color="#6B7280" />
+        <CloseCircle size={20} color="#6B7280" variant="Bold" />
         <Text style={[styles.buttonText, { color: '#6B7280' }]}>إلغاء</Text>
       </TouchableOpacity>
     </View>

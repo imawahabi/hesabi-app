@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { Activity, Calendar, Note, Wallet2 } from 'iconsax-react-nativejs';
 import React, { useEffect, useState } from 'react';
 import {
   Animated,
@@ -90,7 +91,7 @@ const OnboardingStep: React.FC<OnboardingStepProps> = ({
           {/* Temp Button */}
           <TouchableOpacity
             style={styles.skipDevButton}
-            onPress={() => router.push('/dashboard')}
+            onPress={() => router.push('/splash')}
             activeOpacity={0.7}
           >
             <Text style={styles.skipDevText}>تخطي مؤقتاً </Text>
@@ -150,7 +151,15 @@ const OnboardingStep: React.FC<OnboardingStepProps> = ({
             },
           ]}
         >
-          <Ionicons name={icon} size={screenWidth * 0.2} color="#FFFFFF" />
+          {(() => {
+            // Map Ionicons names used in steps to Iconsax components
+            const size = screenWidth * 0.2;
+            if (icon === 'wallet-outline') return <Wallet2 size={size} color="#FFFFFF" variant="Bold" />;
+            if (icon === 'list-outline') return <Note size={size} color="#FFFFFF" variant="Bold" />;
+            if (icon === 'calendar-outline') return <Calendar size={size} color="#FFFFFF" variant="Bold" />;
+            if (icon === 'stats-chart-outline') return <Activity size={size} color="#FFFFFF" variant="Bold" />;
+            return <Wallet2 size={size} color="#FFFFFF" variant="Bold" />;
+          })()}
         </Animated.View>
 
         {/* النص */}
@@ -266,22 +275,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(248, 250, 252, 0.9)',
     borderRadius: 25,
     alignSelf: 'center',
-    shadowColor: '#64748B',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 15,
+    height: 15,
+    borderRadius: 64,
     backgroundColor: '#CBD5E1',
     marginHorizontal: 4,
   },
   progressDotActive: {
     backgroundColor: '#3B82F6',
-    width: 24,
+    width: 50,
     shadowColor: '#3B82F6',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,

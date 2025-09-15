@@ -1,4 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
+import {
+  Wallet as WalletIcon,
+  Profile2User,
+  Card as CardIcon,
+  Bag2,
+  Tag2,
+  Home3,
+  Flash,
+  Call,
+  ShieldTick,
+  Heart,
+  Activity,
+  Car,
+  Mobile,
+  Monitor,
+  Briefcase,
+  Location,
+  Wifi,
+  DocumentText,
+  Global,
+  Airplane,
+  TickCircle,
+} from 'iconsax-react-nativejs';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -43,6 +67,37 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const getIconsaxByName = (name: string): React.ComponentType<any> => {
+    switch (name) {
+      case 'wallet': return WalletIcon;
+      case 'people':
+      case 'person':
+      case 'people-circle': return Profile2User;
+      case 'card':
+      case 'card-outline': return CardIcon;
+      case 'bag': return Bag2;
+      case 'pricetag':
+      case 'pricetag-outline': return Tag2;
+      case 'home': return Home3;
+      case 'flash': return Flash;
+      case 'call': return Call;
+      case 'shield-checkmark': return ShieldTick;
+      case 'heart': return Heart;
+      case 'pulse': return Activity;
+      case 'car':
+      case 'car-sport': return Car;
+      case 'phone-portrait': return Mobile;
+      case 'tv': return Monitor;
+      case 'briefcase': return Briefcase;
+      case 'location': return Location;
+      case 'wifi': return Wifi;
+      case 'document': return DocumentText;
+      case 'globe': return Global;
+      case 'airplane': return Airplane;
+      case 'medical': return ShieldTick;
+      default: return DocumentText;
+    }
+  };
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedType, setSelectedType] = useState<CommitmentType | null>(null);
   const [selectedChoice, setSelectedChoice] = useState<any>(null);
@@ -474,7 +529,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
                 onPress={() => handleSelectFromRegistered(item)}
               >
                 <View style={[styles.selectionIcon, { backgroundColor: item.color }]}>
-                  <Ionicons name={item.icon as any} size={20} color="white" />
+                  {(() => { const IconCmp = getIconsaxByName(item.icon); return <IconCmp size={20} color="white" variant={'Bold'} />; })()}
                 </View>
                 <View style={styles.selectionInfo}>
                   <Text style={styles.selectionName}>{item.name}</Text>
@@ -519,7 +574,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
                 </View>
                 {selectedChoice?.id === choice.id && (
                   <View style={styles.stepIndicator}>
-                    <Ionicons name="checkmark-circle" size={20} color="#059669" />
+                    <TickCircle size={20} color="#059669" variant={'Bold'} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -549,7 +604,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
                 activeOpacity={0.7}
               >
                 <View style={[styles.institutionIcon, { backgroundColor: entity.color }]}>
-                  <Ionicons name={entity.icon as any} size={20} color="white" />
+                  {(() => { const IconCmp = getIconsaxByName(entity.icon); return <IconCmp size={20} color="white" variant={'Bold'} />; })()}
                 </View>
                 
                 <View style={styles.institutionInfo}>
@@ -574,7 +629,7 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
 
                 {selectedInstitution?.id === entity.id && (
                   <View style={styles.stepIndicator}>
-                    <Ionicons name="checkmark-circle" size={20} color="#059669" />
+                    <TickCircle size={20} color="#059669" variant={'Bold'} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -605,14 +660,14 @@ const AddCommitmentModal: React.FC<AddCommitmentModalProps> = ({
             activeOpacity={0.7}
           >
             <View style={[styles.typeIcon, { backgroundColor: type.color }]}>
-              <Ionicons name={type.icon as any} size={24} color="white" />
+              {(() => { const IconCmp = getIconsaxByName(type.icon); return <IconCmp size={24} color="white" variant={'Bold'} />; })()}
             </View>
             <View style={styles.typeInfo}>
               <Text style={styles.typeName}>{type.name}</Text>
               <Text style={styles.typeDescription}>{type.description}</Text>
             </View>
             {selectedType?.id === type.id && (
-              <Ionicons name="checkmark-circle" size={24} color={type.color} />
+              <TickCircle size={24} color={type.color} variant={'Bold'} />
             )}
           </TouchableOpacity>
         ))}

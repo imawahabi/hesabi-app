@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
+import { Filter, More, SearchNormal1 } from 'iconsax-react-nativejs';
 import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   Easing,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,11 +18,15 @@ interface SubPageHeaderProps {
   subtitle?: string;
   showBackButton?: boolean;
   rightAction?: {
-    icon: string;
+    icon: 'filter' | 'more' | 'search';
     onPress: () => void;
+    badge?: number;
   };
   scrollY?: Animated.Value;
-  entrance?: boolean; // enable/disable entrance animation on mount
+  backgroundColor?: string;
+  compact?: boolean;
+  bottomSpacing?: number;
+  titleIcon?: React.ReactNode;
 }
 
 const SubPageHeader: React.FC<SubPageHeaderProps> = ({
@@ -30,51 +35,48 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
   showBackButton = true,
   rightAction,
   scrollY,
-  entrance = true,
+  backgroundColor = '#FFFFFF',
+  compact = false,
+  bottomSpacing = 0,
+  titleIcon,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(-30)).current;
-  const headerOpacity = useRef(new Animated.Value(1)).current;
-  const blurIntensity = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(-20)).current;
+  const shadowAnim = useRef(new Animated.Value(0)).current;
+  const interpolatedShadowOpacity = shadowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.08],
+  });
 
   useEffect(() => {
-    // Entrance animation (can be disabled)
-    if (entrance) {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 500,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 500,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      // jump to final state immediately
-      fadeAnim.setValue(1);
-      slideAnim.setValue(0);
-    }
+    // Simple entrance animation
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 400,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start();
 
-    // Scroll-based animations with blur effect
+    // Scroll-based shadow animation
     if (scrollY) {
       const headerListener = scrollY.addListener(({ value }) => {
-        const opacity = Math.max(0.95, 1 - value / 150);
-        headerOpacity.setValue(opacity);
-        
-        const blur = Math.min(20, value / 5);
-        blurIntensity.setValue(blur);
+        const shadow = Math.min(1, value / 50);
+        shadowAnim.setValue(shadow);
       });
 
       return () => {
         scrollY.removeListener(headerListener);
       };
     }
-  }, [scrollY, entrance, fadeAnim, slideAnim, headerOpacity, blurIntensity]);
+  }, [scrollY, fadeAnim, slideAnim, shadowAnim]);
 
   const handleBackPress = () => {
     if (router.canGoBack()) {
@@ -84,28 +86,45 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
     }
   };
 
+  const getRightActionIcon = () => {
+    if (!rightAction) return null;
+    switch (rightAction.icon) {
+      case 'filter':
+        return <Filter size={18} color="#374151" variant="Bold" />;
+      case 'more':
+        return <More size={18} color="#374151" variant="Bold" />;
+      case 'search':
+        return <SearchNormal1 size={18} color="#374151" variant="Bold" />;
+      default:
+        return <Filter size={18} color="#374151" variant="Bold" />;
+    }
+  };
+
   return (
-    <Animated.View 
-      style={[
-        styles.container,
-        {
-          opacity: headerOpacity,
-        }
-      ]}
-    >
-      <BlurView intensity={20} style={styles.blurContainer}>
-        <View style={styles.backgroundOverlay} />
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
+      <Animated.View 
+        style={[
+          styles.container,
+          {
+            backgroundColor,
+            shadowOpacity: interpolatedShadowOpacity,
+          },
+          compact && styles.compactContainer
+        ]}
+      >
         <SafeAreaView>
           <Animated.View
             style={[
               styles.content,
+              compact && styles.compactContent,
               {
                 opacity: fadeAnim,
                 transform: [{ translateY: slideAnim }],
               }
             ]}
           >
-            <View style={styles.topRow}>
+            <View style={[styles.topRow, compact && styles.compactTopRow]}>
               {showBackButton ? (
                 <TouchableOpacity
                   style={styles.backButton}
@@ -113,18 +132,24 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
                   activeOpacity={0.6}
                 >
                   <View style={styles.iconContainer}>
-                    <Ionicons name="chevron-forward" size={20} color="#1F2937" />
+                    <Ionicons name="chevron-forward" size={18} color="#374151" />
                   </View>
                 </TouchableOpacity>
               ) : (
-                // spacer to keep title centered when no back button
-                <View style={styles.rightAction} />
+                <View style={styles.spacer} />
               )}
 
               <View style={styles.titleContainer}>
-                <Text style={styles.title}>{title}</Text>
-                {subtitle && (
-                  <Text style={styles.subtitle}>{subtitle}</Text>
+                <View style={[styles.titleRow, compact && styles.compactTitleRow]}>
+                  {titleIcon}
+                  <Text style={[styles.title, compact && styles.compactTitle]}>
+                    {title}
+                  </Text>
+                </View>
+                {subtitle && !compact && (
+                  <Text style={styles.subtitle}>
+                    {subtitle}
+                  </Text>
                 )}
               </View>
 
@@ -135,81 +160,144 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = ({
                   activeOpacity={0.6}
                 >
                   <View style={styles.iconContainer}>
-                    <Ionicons name={rightAction.icon as any} size={20} color="#1F2937" />
+                    {getRightActionIcon()}
+                    {rightAction.badge && rightAction.badge > 0 && (
+                      <View style={styles.badge}>
+                        <Text style={styles.badgeText}>
+                          {rightAction.badge > 99 ? '99+' : rightAction.badge}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 </TouchableOpacity>
               ) : (
-                <View style={styles.rightAction} />
+                <View style={styles.spacer} />
               )}
             </View>
           </Animated.View>
         </SafeAreaView>
-      </BlurView>
-    </Animated.View>
+      </Animated.View>
+      {/* Bottom spacer to keep content away from header */}
+      <View style={{ height: bottomSpacing }} />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: 'sticky',
-    top: 0,
     zIndex: 1000,
-    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.10)',
   },
-  blurContainer: {
-    paddingBottom: 20,
-  },
-  backgroundOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+  compactContainer: {
+    shadowRadius: 4,
+    elevation: 2,
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingVertical: 12,
+  },
+  compactContent: {
+    paddingVertical: 8,
   },
   topRow: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
     justifyContent: 'space-between',
-    minHeight: 50,
+    minHeight: 48,
+  },
+  compactTopRow: {
+    minHeight: 40,
   },
   backButton: {
-    padding: 8,
+    padding: 6,
   },
   iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(31, 41, 55, 0.08)',
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(31, 41, 55, 0.12)',
+    borderColor: '#E5E7EB',
   },
   titleContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+  },
+  titleRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  compactTitleRow: {
+    gap: 6,
+  },
+  titleIconChip: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+  },
+  compactTitleIconChip: {
+    width: 22,
+    height: 22,
+    borderRadius: 8,
+  },
+  defaultTitleIconBg: {
+    backgroundColor: '#EEF2FF',
   },
   title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1F2937',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
     textAlign: 'center',
     fontFamily: 'Cairo-Bold',
-    letterSpacing: -0.5,
+  },
+  compactTitle: {
+    fontSize: 16,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#6B7280',
     textAlign: 'center',
     marginTop: 2,
     fontFamily: 'Cairo-Regular',
-    fontWeight: '500',
   },
   rightAction: {
-    padding: 8,
-    width: 52,
+    padding: 6,
+  },
+  spacer: {
+    width: 44,
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: '#EF4444',
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
+    fontFamily: 'Cairo-Bold',
+    textAlign: 'center',
   },
 });
 

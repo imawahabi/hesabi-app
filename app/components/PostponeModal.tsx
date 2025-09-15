@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Calendar, Clock, CloseCircle, TickCircle } from 'iconsax-react-nativejs';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -235,7 +236,11 @@ const PostponeModal: React.FC<PostponeModalProps> = ({
               onPress={() => setFormData({...formData, postponeType: option.id})}
             >
               <View style={[styles.postponeTypeIcon, { backgroundColor: option.color }]}>
-                <Ionicons name={option.icon as any} size={20} color="white" />
+                {option.icon === 'time' ? (
+                  <Clock size={20} color="white" variant="Bold" />
+                ) : (
+                  <Calendar size={20} color="white" variant={option.icon === 'calendar-outline' ? 'Outline' : 'Bold'} />
+                )}
               </View>
               <Text style={[
                 styles.postponeTypeText,
@@ -245,7 +250,7 @@ const PostponeModal: React.FC<PostponeModalProps> = ({
               </Text>
               {formData.postponeType === option.id && (
                 <View style={styles.postponeTypeCheckmark}>
-                  <Ionicons name="checkmark-circle" size={16} color={option.color} />
+                  <TickCircle size={16} color={option.color} variant="Bold" />
                 </View>
               )}
             </TouchableOpacity>
@@ -301,7 +306,7 @@ const PostponeModal: React.FC<PostponeModalProps> = ({
                 {reason}
               </Text>
               {formData.reason === reason && (
-                <Ionicons name="checkmark-circle" size={14} color="#059669" />
+                <TickCircle size={14} color="#059669" variant="Bold" />
               )}
             </TouchableOpacity>
           ))}
@@ -363,7 +368,7 @@ const PostponeModal: React.FC<PostponeModalProps> = ({
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
-          <Ionicons name="time" size={20} color="white" />
+          <Clock size={20} color="white" variant="Bold" />
           <Text style={styles.buttonText}>تأجيل الالتزام</Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -372,7 +377,7 @@ const PostponeModal: React.FC<PostponeModalProps> = ({
         style={[styles.actionButton, styles.secondaryButton]}
         onPress={handleClose}
       >
-        <Ionicons name="close-circle" size={20} color="#6B7280" />
+        <CloseCircle size={20} color="#6B7280" variant="Bold" />
         <Text style={[styles.buttonText, { color: '#6B7280' }]}>إلغاء</Text>
       </TouchableOpacity>
     </View>
@@ -669,7 +674,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     backgroundColor: '#F9FAFB',
-    borderRadius: 20,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     gap: 4,

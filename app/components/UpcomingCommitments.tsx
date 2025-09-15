@@ -1,4 +1,17 @@
-
+import {
+  Calendar,
+  TickCircle,
+  Home3,
+  Card as CardIcon,
+  Bag2,
+  Tag2,
+  Profile2User,
+  Flash,
+  Heart,
+  Wallet,
+  Receipt1,
+  Clock,
+} from 'iconsax-react-nativejs';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -17,18 +30,18 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
   onPostponeCommitment 
 }) => {
   const getCommitmentIcon = (type: string) => {
-    const iconMap: { [key: string]: string } = {
-      'قرض شخصي': 'person',
-      'قرض بنكي': 'card',
-      'أقساط بدون فوائد': 'bag',
-      'أقساط بفوائد': 'pricetag',
-      'تعاونيات': 'people',
-      'إيجار': 'home',
-      'خدمات عامة': 'flash',
-      'تأمين صحي': 'medical',
-      'الإدخار': 'wallet'
+    const map: { [key: string]: React.ComponentType<any> } = {
+      'قرض شخصي': Profile2User,
+      'قرض بنكي': CardIcon,
+      'أقساط بدون فوائد': Bag2,
+      'أقساط بفوائد': Tag2,
+      'تعاونيات': Profile2User,
+      'إيجار': Home3,
+      'خدمات عامة': Flash,
+      'تأمين صحي': Heart,
+      'الإدخار': Wallet,
     };
-    return iconMap[type] || 'receipt';
+    return map[type] || Receipt1;
   };
 
   const getUrgencyData = (daysLeft: number) => {
@@ -58,7 +71,7 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
                   alignItems: 'center',
                 }}
               >
-                <Ionicons name="calendar" size={22} color="#3B82F6" />
+                <Calendar size={22} color="#3B82F6" variant="Bold" />
               </View>
             </View>
             <Text style={styles.sectionTitle}>الالتزامات القادمة</Text>
@@ -73,7 +86,7 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
             onPress={() => router.push('/commitments')}
           >
             <Text style={styles.moreText}>المزيد</Text>
-            <Ionicons name="chevron-back" size={14} color="#3B82F6" />
+            <Ionicons name="chevron-back" size={18} color="#3B82F6" />
           </TouchableOpacity>
         </View>
       </View>
@@ -86,7 +99,7 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
             style={styles.emptyCard}
           >
             <View style={styles.emptyIconBg}>
-              <Ionicons name="checkmark-circle" size={32} color="#16A34A" />
+              <TickCircle size={32} color="#16A34A" variant="Bold" />
             </View>
             <Text style={styles.emptyMainText}>رائع! لا توجد التزامات عاجلة</Text>
             <Text style={styles.emptySubText}>جميع التزاماتك تحت السيطرة</Text>
@@ -107,18 +120,17 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
                     {/* Left: Icon & Info */}
                     <View style={styles.leftSection}>
                       <View style={[styles.iconBg, { backgroundColor: `${commitment.color}15` }]}>
-                        <Ionicons 
-                          name={getCommitmentIcon(commitment.type) as any}
-                          size={20} 
-                          color={commitment.color} 
-                        />
+                        {(() => {
+                          const IconCmp = getCommitmentIcon(commitment.type);
+                          return <IconCmp size={20} color={commitment.color} variant={'Bold'} />;
+                        })()}
                       </View>
                       <View style={styles.infoSection}>
                         <Text style={styles.commitmentTitle} numberOfLines={1}>
                           {commitment.name}
                         </Text>
                         <View style={styles.metaRow}>
-                          <Ionicons name="calendar-outline" size={12} color="#94A3B8" />
+                          <Calendar size={12} color="#94A3B8" variant="Outline" />
                           <Text style={styles.dateText}>{commitment.dueDate}</Text>
                           <View style={[styles.urgencyBadge, { backgroundColor: urgency.bgColor }]}>
                             <View style={[styles.urgencyDot, { backgroundColor: urgency.color }]} />
@@ -146,7 +158,7 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
                       onPress={() => onPayCommitment?.(commitment)}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="card" size={16} color="white" />
+                      <CardIcon size={16} color="white" variant="Bold" />
                       <Text style={styles.primaryActionText}>دفع الآن</Text>
                     </TouchableOpacity>
                     
@@ -155,7 +167,7 @@ const UpcomingCommitments: React.FC<UpcomingCommitmentsProps> = ({
                       onPress={() => onPostponeCommitment?.(commitment)}
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="time-outline" size={16} color="#64748B" />
+                      <Clock size={16} color="#64748B" variant="Outline" />
                       <Text style={styles.secondaryActionText}>تأجيل</Text>
                     </TouchableOpacity>
                   </View>
@@ -277,6 +289,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 8,
+  },
+  firstCard: {
+    // reserved for potential special styling of the first card
   },
   cardGradient: {
     borderRadius: 20,

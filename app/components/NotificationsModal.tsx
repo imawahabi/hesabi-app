@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { TickCircle, Notification as Bell, MedalStar, Danger } from 'iconsax-react-nativejs';
 import React from 'react';
 import { Animated, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -27,13 +28,13 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({
   onMarkAsRead,
   onMarkAllAsRead,
 }) => {
-  const getNotificationIcon = (type: Notification['type']) => {
+  const getNotificationIconCmp = (type: Notification['type']) => {
     switch (type) {
-      case 'payment': return 'checkmark-circle';
-      case 'reminder': return 'time';
-      case 'achievement': return 'trophy';
-      case 'warning': return 'warning';
-      default: return 'notifications';
+      case 'payment': return TickCircle;
+      case 'reminder': return Bell;
+      case 'achievement': return MedalStar;
+      case 'warning': return Danger;
+      default: return Bell;
     }
   };
 
@@ -110,11 +111,10 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({
                             { backgroundColor: `${getNotificationColor(notification.type)}20` },
                           ]}
                         >
-                          <Ionicons
-                            name={getNotificationIcon(notification.type)}
-                            size={20}
-                            color={getNotificationColor(notification.type)}
-                          />
+                          {(() => {
+                            const IconCmp = getNotificationIconCmp(notification.type);
+                            return <IconCmp size={20} color={getNotificationColor(notification.type)} variant={notification.read ? 'Outline' : 'Bold'} />;
+                          })()}
                         </View>
                         <View style={styles.textContainer}>
                           <Text style={styles.notificationTitle}>{notification.title}</Text>

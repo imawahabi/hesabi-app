@@ -1,5 +1,12 @@
-
-import { Ionicons } from '@expo/vector-icons';
+import {
+  Clock,
+  TickCircle,
+  Notification,
+  AddCircle,
+  RefreshCircle,
+  InfoCircle,
+  DocumentText,
+} from 'iconsax-react-nativejs';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -26,13 +33,13 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
   const displayActivities = recentActivities;
   
   const getActivityIcon = (type: string) => {
-    const iconMap: { [key: string]: string } = {
-      'payment': 'checkmark-circle',
-      'reminder': 'notifications',
-      'new': 'add-circle',
-      'update': 'sync-circle'
+    const map: { [key: string]: React.ComponentType<any> } = {
+      payment: TickCircle,
+      reminder: Notification,
+      new: AddCircle,
+      update: RefreshCircle,
     };
-    return iconMap[type] || 'information-circle';
+    return map[type] || InfoCircle;
   };
 
   const renderActivity = (item: Activity, index: number) => (
@@ -44,11 +51,10 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
         <View style={styles.activityMain}>
           {/* Left: Icon */}
           <View style={[styles.iconBg, { backgroundColor: `${item.color}15` }]}>
-            <Ionicons 
-              name={getActivityIcon(item.type) as any}
-              size={22} 
-              color={item.color} 
-            />
+            {(() => {
+              const IconCmp = getActivityIcon(item.type);
+              return <IconCmp size={22} color={item.color} variant={'Bold'} />;
+            })()}
           </View>
           
           {/* Center: Details */}
@@ -57,7 +63,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
               {item.title}
             </Text>
             <View style={styles.metaRow}>
-              <Ionicons name="time-outline" size={12} color="#94A3B8" />
+              <Clock size={12} color="#94A3B8" variant={'Outline'} />
               <Text style={styles.activityTime}>{item.time}</Text>
             </View>
           </View>
@@ -95,7 +101,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
                   alignItems: 'center',
                 }}
               >
-                <Ionicons name="time" size={22} color="#3B82F6" />
+                <Clock size={22} color="#3B82F6" variant={'Bold'} />
               </View>
             </View>
             <Text style={styles.sectionTitle}>الأنشطة الأخيرة</Text>
@@ -126,7 +132,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
             style={styles.emptyCard}
           >
             <View style={styles.emptyIconBg}>
-              <Ionicons name="document-text-outline" size={32} color="#6B7280" />
+              <DocumentText size={32} color="#6B7280" variant={'Outline'} />
             </View>
             <Text style={styles.emptyMainText}>لا توجد أنشطة حديثة</Text>
             <Text style={styles.emptySubText}>ستظهر أنشطتك هنا عند القيام بأي عمليات</Text>

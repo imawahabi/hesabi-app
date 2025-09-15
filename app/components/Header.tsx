@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { LampCharge, Notification, User, Wallet } from 'iconsax-react-nativejs';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import NotificationsModal from './NotificationsModal';
@@ -25,7 +26,12 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
       'سدّد الديون ذات الفائدة الأعلى أولاً',
       'راقب مصاريفك الأسبوعية وحدّد سقفاً لكل فئة',
       'ادّخر قبل أن تصرف (Pay Yourself First)',
-      'خطّط للالتزامات الموسمية مبكراً (مدارس/سفر)'
+      'خطّط للالتزامات الموسمية مبكراً (مدارس/سفر)',
+      'استقطع مبلغ الادخار تلقائياً فور استلام الراتب',
+      'استثمر جزءاً من مدخراتك في أدوات منخفضة المخاطر',
+      'ضع ميزانية شهرية والتزم بها مهما كانت الظروف',
+      'أعد التفاوض على القروض إذا توفرت فائدة أقل',
+      'تخلص من الاشتراكات التلقائية غير المستخدمة',
     ],
     []
   );
@@ -192,7 +198,7 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
           </Animated.View>
         </TouchableOpacity>
         <View style={styles.appNameContainer}>
-          <Ionicons name="wallet" size={24} color="white" style={styles.appLogo} />
+          <Wallet size={24} color="white" variant="Bold" style={styles.appLogo as any} />
           <Text style={styles.appName}>حسابي</Text>
         </View>
         <TouchableOpacity 
@@ -201,7 +207,7 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
           activeOpacity={0.7}
         >
           <View>
-            <Ionicons name="notifications-outline" size={24} color="white" />
+            <Notification size={24} color="white" variant="Bold" />
             <View style={styles.notificationBadge}>
               <Text style={styles.notificationText}>3</Text>
             </View>
@@ -212,13 +218,13 @@ const Header = ({ userName, onMenuPress }: HeaderProps) => {
         <View style={styles.greetingRow}>
           {/* Avatar on the right in RTL (row-reverse) by placing it first */}
           <View style={styles.avatarPlaceholder} accessibilityRole="image" accessibilityLabel="صورة المستخدم">
-            <Ionicons name="person" size={18} color="white" />
+            <User size={18} color="white" variant="Bold" />
           </View>
           <Text style={styles.welcomeMessage}>مرحباً، </Text>
           <Text style={styles.userName}>{userName}</Text>
         </View>
         <View style={styles.tipContainer}>
-          <Ionicons name="bulb" size={14} color="yellow" style={styles.tipIcon} />
+          <LampCharge size={18} color="yellow" variant="Bold" style={styles.tipIcon as any} />
           <Animated.Text
             style={[
               styles.motivationText,
@@ -430,7 +436,7 @@ const styles = StyleSheet.create({
     marginRight:-25
   },
   tipIcon: {
-    marginLeft: 6,
+    marginLeft: 4,
   },
   motivationText: {
     fontSize: 14,

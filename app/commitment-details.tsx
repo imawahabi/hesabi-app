@@ -1,6 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
+import {
+  ArrowLeft2,
+  Calendar,
+  Car,
+  Clock,
+  More,
+  Profile2User,
+  TickCircle,
+  TrendUp,
+  Wallet,
+} from 'iconsax-react-nativejs';
 import React, { useRef } from 'react';
 
 import {
@@ -61,7 +72,7 @@ const CommitmentDetailsScreen = () => {
         >
           <View style={styles.headerTopRow}>
             <View style={[styles.infoIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
-              <Ionicons name="car" size={22} color="white" />
+              <Car size={22} color="white" variant="Bold" />
             </View>
             <View style={styles.headerTitles}>
               <Text style={styles.headerTitleText}>{commitment.name}</Text>
@@ -82,11 +93,11 @@ const CommitmentDetailsScreen = () => {
 
         <View style={styles.metaRow}>
           <View style={styles.metaItem}>
-            <Ionicons name="calendar-outline" size={14} color="#6B7280" />
+            <Calendar size={14} color="#6B7280" variant="Outline" />
             <Text style={styles.metaText}>{commitment.dueDate}</Text>
           </View>
           <View style={styles.metaItem}>
-            <Ionicons name="people-outline" size={14} color="#6B7280" />
+            <Profile2User size={14} color="#6B7280" variant="Outline" />
             <Text style={styles.metaText}>{commitment.installmentCount} قسط</Text>
           </View>
         </View>
@@ -117,22 +128,22 @@ const CommitmentDetailsScreen = () => {
       <Text style={styles.sectionTitle}>الملخص المالي</Text>
       <View style={styles.summaryGrid}>
         <View style={styles.summaryCard}>
-          <Ionicons name="wallet" size={20} color="#10B981" />
+          <Wallet size={20} color="#10B981" variant="Bold" />
           <Text style={styles.summaryValue}>{commitment.totalAmount.toFixed(3)}</Text>
           <Text style={styles.summaryLabel}>المبلغ الإجمالي</Text>
         </View>
         <View style={styles.summaryCard}>
-          <Ionicons name="checkmark-circle" size={20} color="#3B82F6" />
+          <TickCircle size={20} color="#3B82F6" variant="Bold" />
           <Text style={styles.summaryValue}>{commitment.paidAmount.toFixed(3)}</Text>
           <Text style={styles.summaryLabel}>المبلغ المدفوع</Text>
         </View>
         <View style={styles.summaryCard}>
-          <Ionicons name="time" size={20} color="#F59E0B" />
+          <Clock size={20} color="#F59E0B" variant="Bold" />
           <Text style={styles.summaryValue}>{commitment.remainingAmount.toFixed(3)}</Text>
           <Text style={styles.summaryLabel}>المبلغ المتبقي</Text>
         </View>
         <View style={styles.summaryCard}>
-          <Ionicons name="trending-up" size={20} color="#EF4444" />
+          <TrendUp size={20} color="#EF4444" variant="Bold" />
           <Text style={styles.summaryValue}>{commitment.interestRate}%</Text>
           <Text style={styles.summaryLabel}>معدل الفائدة</Text>
         </View>
@@ -146,18 +157,18 @@ const CommitmentDetailsScreen = () => {
         <Text style={styles.sectionTitle}>سجل المدفوعات</Text>
         <TouchableOpacity style={styles.viewAllButton}>
           <Text style={styles.viewAllText}>عرض الكل</Text>
-          <Ionicons name="chevron-back" size={16} color="#3B82F6" />
+          <ArrowLeft2 size={16} color="#3B82F6" variant="Bold" />
         </TouchableOpacity>
       </View>
       
       {commitment.paymentHistory.slice(0, 5).map((payment) => (
         <View key={payment.id} style={styles.paymentItem}>
           <View style={styles.paymentIcon}>
-            <Ionicons 
-              name={payment.status === 'paid' ? 'checkmark-circle' : 'time'} 
-              size={20} 
-              color={payment.status === 'paid' ? '#10B981' : '#F59E0B'} 
-            />
+            {payment.status === 'paid' ? (
+              <TickCircle size={20} color="#10B981" variant="Bold" />
+            ) : (
+              <Clock size={20} color="#F59E0B" variant="Bold" />
+            )}
           </View>
           <View style={styles.paymentInfo}>
             <Text style={styles.paymentDate}>{payment.date}</Text>
@@ -183,16 +194,16 @@ const CommitmentDetailsScreen = () => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
-          <Ionicons name="add-circle" size={20} color="white" />
+          <Ionicons name="add" size={20} color="white" />
           <Text style={styles.buttonText}>تسجيل دفعة</Text>
         </LinearGradient>
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={[styles.actionButton, styles.secondaryButton]}
-        onPress={() => router.push('/edit-commitment')}
+        onPress={() => router.push('/commitments')}
       >
-        <Ionicons name="create" size={20} color="#3B82F6" />
+        <More size={20} color="#3B82F6" variant="Bold" />
         <Text style={[styles.buttonText, { color: '#3B82F6' }]}>تعديل الالتزام</Text>
       </TouchableOpacity>
     </View>
@@ -205,8 +216,8 @@ const CommitmentDetailsScreen = () => {
         subtitle={commitment.name}
         scrollY={scrollY}
         rightAction={{
-          icon: 'share',
-          onPress: () => console.log('Share commitment')
+          icon: 'more',
+          onPress: () => console.log('More actions')
         }}
       />
       
@@ -371,7 +382,7 @@ const styles = StyleSheet.create({
   },
   progressBarWrapper: {
     position: 'relative',
-    height: 15,
+    height: 12,
     borderRadius: 20,
     overflow: 'hidden',
     flexDirection: 'row-reverse',
